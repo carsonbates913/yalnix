@@ -1,0 +1,11 @@
+FYI:
+
+Makefile:   a sample makefile (set up to build and link your kernel)
+template.c: a template for implementing LoadProgram
+
+test/: some sample user-level programs for testing.  All of these should run correctly!
+fancy/: some rather fancy user-level programs.  FYA
+
+dot.gdbinit: if you're not using our VirtualBox instance, copy this to "~/.gdbinit"
+
+
