@@ -237,6 +237,78 @@ typedef struct kernel_context KernelContext;
 #define	TRAP_TTY_TRANSMIT	6
 #define	TRAP_DISK		7
 
+/*
+i'm not totally sure if this is the correct way to handle the traps. but it's the only way i can think of to handle the traps.
+handle_trap(user_context* uc, pcb_t* pcb){
+  construct copy of user context
+  store copy in pcb->user_context
+  TracePrintf(1, "Kernel trap\n");
+  switch (uc->vector) {
+    case TRAP_KERNEL:
+      handle_trap_kernel(uc);
+      break;
+    case TRAP_CLOCK:
+      handle_trap_clock(uc);
+      break;
+    case TRAP_ILLEGAL:
+      handle_trap_illegal(uc);
+      break;
+    case TRAP_MEMORY:
+      handle_trap_memory(uc);
+      break;
+    case TRAP_MATH:
+      handle_trap_math(uc);
+      break;
+    case TRAP_TTY_RECEIVE:
+      handle_trap_tty_receive(uc);
+      break;
+    case TRAP_TTY_TRANSMIT:
+      handle_trap_tty_transmit(uc);
+      break;
+    case TRAP_DISK:
+      handle_trap_disk(uc);
+      break;
+    default:
+      TracePrintf(1, "Unknown trap\n");
+      break;
+  }
+}
+
+Nevermind, I see that the interrupt_vector_table already provides a way to simply pass teh kernel to the correct handler.
+
+handle_trap_kernel(user_context* uc){
+  TracePrintf(1, "Kernel trap\n");
+}
+
+handle_trap_clock(user_context* uc){
+  TracePrintf(1, "Clock trap\n");
+}
+
+handle_trap_illegal(user_context* uc){
+  TracePrintf(1, "Illegal trap\n");
+}
+
+handle_trap_memory(user_context* uc){
+  TracePrintf(1, "Memory trap\n");
+}
+
+handle_trap_math(user_context* uc){
+  TracePrintf(1, "Math trap\n");
+}
+
+handle_trap_tty_receive(user_context* uc){
+  TracePrintf(1, "TTY receive trap\n");
+}
+
+handle_trap_tty_transmit(user_context* uc){
+  TracePrintf(1, "TTY transmit trap\n");
+}
+
+handle_trap_disk(user_context* uc){
+  TracePrintf(1, "Disk trap\n");
+}
+*/
+
 #define	TRAP_VECTOR_SIZE	16	/* dimensioned size of array */
 
 
@@ -316,14 +388,73 @@ extern void Pause (void);
 extern void TracePrintf (int, char *, ...);
 extern void DiskAccess (int, int, void *);
 
+
+/* 
+ * Definitions of Data Structures to be written by student
+ */
+
+ typedef struct pcb {
+  int pid;
+  UserContext* user_context;
+  pte_t* page_table;
+ };
+
+ typedef struct pcb pcb_t;
+
+ struct process_table {
+  pcb_t* pcb;
+  int size;
+  int capacity;
+ };
+
+ typedef struct process_table process_table_t;
+
+ //pte_t  *region0_pt;
+
+
+ struct process_queue {
+  pcb_t* pcb;
+  int size;
+  int capacity;
+ };
+
+ typedef struct process_queue process_queue_t;
+
+
+// int[] free_frames;
+ 
 /* 
  * Definitions of functions to be written by student
  */
 
 extern int SetKernelBrk (void *);
+/*
+1. check if vm_enabled
+2. if its not, set the brk to the address passed in, and done
+3. if it is enabled, then you have to actually allocate the frames
+4. compare if theaddress is larger and smaller than the current brk
+5. if its smaller, free the memory past it
+6. if its larger, allocate frames to the remaining memory
+7. set the brk to the new address
+8. return success
+*/
 
 /* This is the primary entry point into the kernel */
+
 extern void KernelStart (char**, unsigned int, UserContext *);
+
+/*
+1. initialize data like physical memory, num frames, etc
+2. set mv_enable to 0 and get the _orig_kernel_brk_page
+3. initialize the region 0 page table and the region 1 page table
+4. initialize the free_frames tracker
+5. set up the interrupt vector
+6. write to registers for addresses of page tables
+7. flush the TLB
+8. make the idle program control block 
+9. set up User Context for the idle program
+*/
+
 
 
 
@@ -373,6 +504,13 @@ extern void KernelStart (char**, unsigned int, UserContext *);
  */
 typedef KernelContext *KCSFunc_t(KernelContext *, void *, void *);
 extern int KernelContextSwitch(KCSFunc_t *, void *, void *);
+
+/*
+1. save the current kernel context
+2. set the new kernel context
+3. flush the TLB
+4. return success
+*/
 
 /*
  *  Define the physical properties of the disk.

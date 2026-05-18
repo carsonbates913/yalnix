@@ -9,9 +9,42 @@
 
 extern int Nop (int,int,int,int);
 
+/*
+Needed Data Structures:
+Process Control Block
+Page Table
+
+*/
+
+/*
+Fork:
+1. Create a new process id number
+2. Create a new process control block with the process id and the parent process id
+3. Create a new page table for the process + add its address to the process control block
+4. Add the process control block to the process table
+5. Return the new process id
+*/
 extern int Fork (void);
+
+/*
+Exec:
+1. Find the process control block with the process id
+2. Find the page table for the process
+3. Load the page table into the processor
+4. 
+*/
 extern int Exec (char *, char **);
+
+/*
+1. Retrieve the current process id 
+2. Find the process control block with the process id
+3. Free all the memory allocated to the process
+4. 
+3. find the page table address and free it
+4. fr
+*/
 extern void Exit (int);
+
 extern int Wait (int *);
 extern int GetPid (void);
 extern int Brk (void *);
