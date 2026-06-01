@@ -12,17 +12,15 @@
 K_SRC_DIR = .
 
 # What are the kernel c and include files? 
-K_SRCS = kernelstart.c
-#memory.c process.c Queue.c syscalls.c trap.c idle.c re1sp.c re0sp.c kernelbrk.c template.c init.c
-K_INCS = memory.h
-#process.h Queue.h syscalls.h trap.h idle.h init.h
+K_SRCS = kernelstart.c syscalls.c trap.c queue.c
+K_INCS = #memory.h process.h Queue.h syscalls.h trap.h idle.h init.h
 
 # Where's your user source?
 U_SRC_DIR = .
 
 # What are the user c and include files?
-U_SRCS = user.c 
-U_INCS =  
+U_SRCS = init.c ttywrite.c
+U_INCS = 
 
 
 #==========================================================
@@ -54,7 +52,7 @@ YALNIX_OUTPUT = yalnix
 #Use the gcc compiler for compiling and linking
 CC = gcc
 
-DDIR58 = $('./yalnix_framework')
+DDIR58 = $(YALNIX_FRAMEWORK)
 LIBDIR = $(DDIR58)/lib
 INCDIR = $(DDIR58)/include
 ETCDIR = $(DDIR58)/etc
@@ -126,8 +124,4 @@ $(USER_APPS): $(USER_OBJS) $(USER_INCS)  $(USER_LIBS)
 %: %.o $(USER_LIBS)
 	$(LINK_USER) -o $@ $*.o $(USER_LDFLAGS)
 
-USER_SRCS = user/init.c
-USER_OBJS = $(USER_SRCS:%.c=build/%.o)
 
-user: build-dirs $(USER_OBJS)
-	$(CC) -o user/init $(USER_OBJS) -L$(YALNIX_FRAMEWORK)/lib -lyuser -static

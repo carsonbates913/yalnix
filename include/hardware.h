@@ -1,22 +1,3 @@
-#include "ctype.h"
-#include "stdlib.h"
-#include "string.h"
-#include "unistd.h"
-#include "sys/mman.h"
-#include "sys/param.h"
-#include "ucontext.h"
-#include "sys/types.h"
-#include "sys/stat.h"
-#include "sys/fcntl.h"
-#include "yalnix.h"
-#include "yuser.h"
-#include "ylib.h"
-#include "ykernel.h"
-#include "yhardware.h"
-#include "yinterrupt.h"
-#include "ytrap.h"
-#include "ytlb.h"
-#include "yterminal.h"
 /* 
  * Yalnix Support Software for Linux/x86 
  *
@@ -406,41 +387,6 @@ extern unsigned int ReadRegister (int);
 extern void Pause (void);
 extern void TracePrintf (int, char *, ...);
 extern void DiskAccess (int, int, void *);
-
-
-/* 
- * Definitions of Data Structures to be written by student
- */
-
- typedef struct pcb {
-  int pid;
-  UserContext* user_context;
-  pte_t* page_table;
- };
-
- typedef struct pcb pcb_t;
-
- struct process_table {
-  pcb_t* pcb;
-  int size;
-  int capacity;
- };
-
- typedef struct process_table process_table_t;
-
- //pte_t  *region0_pt;
-
-
- struct process_queue {
-  pcb_t* pcb;
-  int size;
-  int capacity;
- };
-
- typedef struct process_queue process_queue_t;
-
-
-// int[] free_frames;
  
 /* 
  * Definitions of functions to be written by student

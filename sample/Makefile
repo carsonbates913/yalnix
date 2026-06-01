@@ -6,7 +6,7 @@
 #
 #	Nov 30, 2022
 
-
+#export YALNIX_FRAMEWORK=/thayerfs/home/f006zqg/cs58/yalnix_framework
 
 # Where's your kernel source?
 K_SRC_DIR = .
