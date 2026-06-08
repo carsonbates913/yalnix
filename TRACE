@@ -1,0 +1,1133 @@
+** Hardware level 1 tracing enabled **
+** Yalnix level 1 tracing enabled **
+** User Prog level 1 tracing enabled **
+Hardware   Kernel heap OK.
+Hardware   Kernel heap usage: 6 blocks allocated, 1848 bytes total
+Hardware   ========= Hardware receives signal ==============
+Hardware   FrameworkSignalHandler(10), depth 1
+Hardware   ========= Hardware receives signal ==============
+Hardware   FrameworkSignalHandler(11), depth 1
+Hardware   ----
+Hardware   | Calling KernelStart
+Hardware   ----
+Hardware   Kernel heap OK.
+Hardware   Kernel heap usage: 7 blocks allocated, 1924 bytes total
+Yalnix     Original kernel brk page: 27
+Hardware   Kernel heap OK.
+Hardware   Kernel heap usage: 9 blocks allocated, 2956 bytes total
+Yalnix     Region 0 page table: 0x2e844
+Hardware       | WriteRegister(REG_PTBR0,0x02e844)
+Hardware       | WriteRegister(REG_PTLR0,0x000080)
+Hardware       | WriteRegister(REG_PTBR1,0x02ea60)
+Hardware       | WriteRegister(REG_PTLR1,0x000080)
+Hardware       | WriteRegister(REG_VM_ENABLE,0x000001)
+Hardware   Enabling VM
+Hardware   _first_kernel_text_page 16
+Hardware   _first_kernel_data_page 20
+Hardware   _orig_kernel_brk_page 27
+Hardware   initializing TLB to be empty
+Hardware   PhysLimit 36000, my_break 36000
+Hardware   clearing TLB
+Hardware   FlushTLB(TLB_FLUSH_1): PTBR1 0x2ea60, PTLR1 0x80
+Hardware   FlushTLB(TLB_FLUSH_0): PTBR0 0x2e844, PTLR0 0x80
+Hardware   moving kernel text,data,heap into TLB
+Hardware   PageInTLB[16] addr 0x20000: 0 -> 1
+Hardware   PageInTLB[17] addr 0x22000: 0 -> 1
+Hardware   PageInTLB[18] addr 0x24000: 0 -> 1
+Hardware   PageInTLB[19] addr 0x26000: 0 -> 1
+Hardware   PageInTLB[20] addr 0x28000: 0 -> 1
+Hardware   PageInTLB[21] addr 0x2a000: 0 -> 1
+Hardware   PageInTLB[22] addr 0x2c000: 0 -> 1
+Hardware   PageInTLB[23] addr 0x2e000: 0 -> 1
+Hardware   PageInTLB[24] addr 0x30000: 0 -> 1
+Hardware   PageInTLB[25] addr 0x32000: 0 -> 1
+Hardware   PageInTLB[26] addr 0x34000: 0 -> 1
+Hardware   moving kernel stack into TLB
+Yalnix     Virtual memory enabled
+Hardware       | WriteRegister(REG_TLB_FLUSH,TLB_FLUSH_ALL)
+Hardware   FlushTLB(TLB_FLUSH_1): PTBR1 0x2ea60, PTLR1 0x80
+Hardware   FlushTLB(TLB_FLUSH_0): PTBR0 0x2e844, PTLR0 0x80
+Hardware       | WriteRegister(REG_VECTOR_BASE,0x02b740)
+Hardware       | WriteRegister(REG_VECTOR_BASE,0x02b740)
+Hardware       | WriteRegister(REG_TLB_FLUSH,TLB_FLUSH_ALL)
+Hardware   FlushTLB(TLB_FLUSH_1): PTBR1 0x2ea60, PTLR1 0x80
+Hardware   FlushTLB(TLB_FLUSH_0): PTBR0 0x2e844, PTLR0 0x80
+Yalnix     Idle process starting: 0x2e844
+Hardware   Kernel heap OK.
+Hardware   Kernel heap usage: 11 blocks allocated, 3952 bytes total
+Yalnix     Idle: pid 0 pc 0x2254a sp 0x1ffffc
+Yalnix     Idle process pid 0 pcb 0x2ec7c
+Hardware   Kernel heap OK.
+Hardware   Kernel heap usage: 13 blocks allocated, 4948 bytes total
+Yalnix     Init process pid 1 pcb 0x2f090
+Hardware   ----
+Hardware   | On [kcs stack] invoking  MyKCS function 0x022578
+Hardware   | From kernelmode SP [region 0] 0xff090 | PC [libhardware.so] 0xf70a8cfb
+Hardware   | PTBR1 0x02ea60 | kstack 126 127
+Hardware   ----
+Yalnix     Copying kernel context
+Yalnix     Copying kernel stack frames
+Yalnix     Copying kernel stack frames to region0 page table
+Yalnix     Copying kernel stack frame 0 to region0 page table
+Yalnix     Copying kernel stack frame 1 to region0 page table
+Hardware       | WriteRegister(REG_TLB_FLUSH,TLB_FLUSH_0)
+Hardware   FlushTLB(TLB_FLUSH_0): PTBR0 0x2e844, PTLR0 0x80
+Yalnix     Copying kernel stack frames to kernel stack base
+Yalnix     temp_kernel_stack_page: 124
+Yalnix     KERNEL_STACK_BASE: 0xfc000
+Yalnix     KERNEL_STACK_MAXSIZE: 16384
+Yalnix     first_kernel_stack_page: 126
+Yalnix     temp_kernel_stack_page * PAGESIZE + VMEM_0_BASE: 0xf8000
+Yalnix     KERNEL_STACK_BASE: 0xfc000
+Yalnix     KERNEL_STACK_MAXSIZE: 16384
+Yalnix     first_kernel_stack_page: 126
+Yalnix     kernel_stack_maxsize: 2
+Hardware   ========= Hardware receives signal ==============
+Hardware   FrameworkSignalHandler(11), depth 2
+Hardware       ----
+Hardware       | TLB miss p:124  -> pfn:001
+Hardware       | In SP [kcs stack] 0xf70bfbfc | PC [region 0] 0x262b3
+Hardware       | PTBR1 0x02ea60 | kstack 126 127
+Hardware       ----
+Hardware   ========= Hardware receives signal ==============
+Hardware   FrameworkSignalHandler(11), depth 2
+Hardware       ----
+Hardware       | TLB miss p:125  -> pfn:002
+Hardware       | In SP [kcs stack] 0xf70bfbfc | PC [region 0] 0x262b3
+Hardware       | PTBR1 0x02ea60 | kstack 126 127
+Hardware       ----
+Yalnix     Clearing kernel stack frames in region0 page table
+Hardware       | WriteRegister(REG_TLB_FLUSH,TLB_FLUSH_0)
+Hardware   FlushTLB(TLB_FLUSH_0): PTBR0 0x2e844, PTLR0 0x80
+Yalnix     Returning kernel context
+Hardware   ----
+Hardware   | On [kcs stack] returning from MyKCS function 0x022578
+Hardware   | Going to kernelmode SP [region 0] 0xff090 | PC [libhardware.so] 0xf70a8cfb
+Hardware   | PTBR1 0x02ea60 | kstack 126 127
+Hardware   ----
+Hardware       | WriteRegister(REG_PTBR1,0x02f288)
+Hardware       | WriteRegister(REG_TLB_FLUSH,TLB_FLUSH_1)
+Hardware   FlushTLB(TLB_FLUSH_1): PTBR1 0x2f288, PTLR1 0x80
+Yalnix     prog_size 5, text 3 data 1 bss 1 pages
+Yalnix     LoadProgram: heap_size 5, stack_size 1
+Yalnix     Setting stack pointer to 0x1fff60
+Yalnix     Allocating 11 bytes for arguments
+Hardware   Kernel heap OK.
+Hardware   Kernel heap usage: 14 blocks allocated, 4964 bytes total
+Yalnix     Throwing away the old region 1 virtual address space
+Yalnix     Building up the new region1
+Yalnix     Allocating 3 pages for text
+Yalnix     Allocating 2 pages for data
+Yalnix     Allocating 1 pages for stack
+Yalnix     Flushing the TLB
+Hardware       | WriteRegister(REG_PTBR1,0x02f288)
+Hardware       | WriteRegister(REG_TLB_FLUSH,TLB_FLUSH_1)
+Hardware   FlushTLB(TLB_FLUSH_1): PTBR1 0x2f288, PTLR1 0x80
+Yalnix     Reading the text from the file into memory
+Hardware   ========= Hardware receives signal ==============
+Hardware   FrameworkSignalHandler(11), depth 2
+Hardware   ========= Hardware receives signal ==============
+Hardware   FrameworkSignalHandler(11), depth 2
+Hardware   ========= Hardware receives signal ==============
+Hardware   FrameworkSignalHandler(11), depth 2
+Hardware   ========= Hardware receives signal ==============
+Hardware   FrameworkSignalHandler(11), depth 2
+Yalnix     Changing the protections for the text pages
+Hardware       | WriteRegister(REG_TLB_FLUSH,TLB_FLUSH_1)
+Hardware   FlushTLB(TLB_FLUSH_1): PTBR1 0x2f288, PTLR1 0x80
+Hardware   ========= Hardware receives signal ==============
+Hardware   FrameworkSignalHandler(11), depth 2
+Hardware   ========= Hardware receives signal ==============
+Hardware   FrameworkSignalHandler(11), depth 2
+Yalnix     Setting entry point to 0x100120
+Hardware   ========= Hardware receives signal ==============
+Hardware   FrameworkSignalHandler(11), depth 2
+Hardware   Kernel heap OK.
+Hardware   Kernel heap usage: 13 blocks allocated, 4948 bytes total
+Yalnix     Leaving KernelStart (running pid 1)
+Hardware   ----
+Hardware   | Back from KernelStart
+Hardware   | HELPER setting Proc 1 kstack to 126 127
+Hardware   | Off to usermode SP [region 1] 0x1fff60 | PC [region 1] 0x100120
+Hardware   | pid 1 | PTBR1 0x02f288 | kstack 126 127
+Hardware   ----
+Hardware   ========= Hardware receives signal ==============
+Hardware   FrameworkSignalHandler(11), depth 1
+Hardware       ----
+Hardware       | TLB miss p:128  -> pfn:003
+Hardware       | In SP [region 1] 0x1fff60 | PC [region 1] 0x100120
+Hardware       | pid 1 | PTBR1 0x02f288 | kstack 126 127
+Hardware       ----
+Hardware   ========= Hardware receives signal ==============
+Hardware   FrameworkSignalHandler(11), depth 1
+Hardware       ----
+Hardware       | TLB miss p:129  -> pfn:004
+Hardware       | In SP [region 1] 0x1fff1c | PC [region 1] 0x103c00
+Hardware       | pid 1 | PTBR1 0x02f288 | kstack 126 127
+Hardware       ----
+Hardware   ========= Hardware receives signal ==============
+Hardware   FrameworkSignalHandler(11), depth 1
+Hardware   ----
+Hardware   | Syscall trap Brk
+Hardware   | From usermode  SP [region 1] 0x1ffda4 | PC [region 1] 0x100d5e
+Hardware   | pid 1 | PTBR1 0x02f288 | kstack 126 127
+Hardware   | Calling Yalnix handler 0x22f8a for trap TRAP_KERNEL (Brk)
+Hardware   ----
+Yalnix     Kernel trap (code 0xabcdef06)
+Hardware   ----
+Hardware   | Back from Yalnix handler 0x22f8a for trap TRAP_KERNEL (Brk)
+Hardware   | Off to usermode SP [region 1] 0x1ffda4 | PC [region 1] 0x100d5e
+Hardware   | pid 1 | PTBR1 0x02f288 | kstack 126 127
+Hardware   ----
+Hardware   ========= Hardware receives signal ==============
+Hardware   FrameworkSignalHandler(11), depth 1
+Hardware   ----
+Hardware   | Syscall trap CvarInit
+Hardware   | From usermode  SP [region 1] 0x1ffe40 | PC [region 1] 0x101310
+Hardware   | pid 1 | PTBR1 0x02f288 | kstack 126 127
+Hardware   | Calling Yalnix handler 0x22f8a for trap TRAP_KERNEL (CvarInit)
+Hardware   ----
+Yalnix     Kernel trap (code 0xabcdef66)
+Hardware   ----
+Hardware   | Back from Yalnix handler 0x22f8a for trap TRAP_KERNEL (CvarInit)
+Hardware   | Off to usermode SP [region 1] 0x1ffe40 | PC [region 1] 0x101310
+Hardware   | pid 1 | PTBR1 0x02f288 | kstack 126 127
+Hardware   ----
+Hardware   ========= Hardware receives signal ==============
+Hardware   FrameworkSignalHandler(11), depth 1
+Hardware   ----
+Hardware   | Syscall trap LockInit
+Hardware   | From usermode  SP [region 1] 0x1ffe40 | PC [region 1] 0x1011ea
+Hardware   | pid 1 | PTBR1 0x02f288 | kstack 126 127
+Hardware   | Calling Yalnix handler 0x22f8a for trap TRAP_KERNEL (LockInit)
+Hardware   ----
+Yalnix     Kernel trap (code 0xabcdef63)
+Hardware   ----
+Hardware   | Back from Yalnix handler 0x22f8a for trap TRAP_KERNEL (LockInit)
+Hardware   | Off to usermode SP [region 1] 0x1ffe40 | PC [region 1] 0x1011ea
+Hardware   | pid 1 | PTBR1 0x02f288 | kstack 126 127
+Hardware   ----
+Hardware   ========= Hardware receives signal ==============
+Hardware   FrameworkSignalHandler(11), depth 1
+Hardware       ----
+Hardware       | TLB miss p:130  -> pfn:005
+Hardware       | In SP [region 1] 0x1ffdb0 | PC [region 1] 0x10334d
+Hardware       | pid 1 | PTBR1 0x02f288 | kstack 126 127
+Hardware       ----
+Hardware   ========= Hardware receives signal ==============
+Hardware   FrameworkSignalHandler(11), depth 1
+Hardware   ----
+Hardware   | Syscall trap TtyWrite
+Hardware   | From usermode  SP [region 1] 0x1ffe10 | PC [region 1] 0x100e6a
+Hardware   | pid 1 | PTBR1 0x02f288 | kstack 126 127
+Hardware   | Calling Yalnix handler 0x22f8a for trap TRAP_KERNEL (TtyWrite)
+Hardware   ----
+Yalnix     Kernel trap (code 0xabcdef22)
+Hardware       ----
+Hardware       | TtyTransmit(0, 0x0002f4a4, 18) ptbr1 2f288
+Hardware       ----
+Hardware   0>Enter 'go' to go:
+Hardware   Kernel heap OK.
+Hardware   Kernel heap usage: 16 blocks allocated, 21364 bytes total
+Yalnix     Scheduling next process
+Yalnix     Ready queue: Yalnix     
+Yalnix     ScheduleNextProcess: ready queue empty, running idle
+Hardware       | WriteRegister(REG_PTBR1,0x02ee74)
+Hardware       | WriteRegister(REG_TLB_FLUSH,TLB_FLUSH_1)
+Hardware   FlushTLB(TLB_FLUSH_1): PTBR1 0x2ee74, PTLR1 0x80
+Yalnix     Switching to next process 0
+Hardware   ----
+Hardware   | On [kcs stack] invoking  MyKCS function 0x022839
+Hardware   | From kernelmode SP [region 0] 0xff030 | PC [libhardware.so] 0xf70a8cfb
+Hardware   | pid 0 | PTBR1 0x02ee74 | kstack 126 127
+Hardware   ----
+Hardware       | WriteRegister(REG_TLB_FLUSH,TLB_FLUSH_0)
+Hardware   FlushTLB(TLB_FLUSH_0): PTBR0 0x2e844, PTLR0 0x80
+Hardware   ----
+Hardware   | On [kcs stack] returning from MyKCS function 0x022839
+Hardware   | Going to kernelmode SP [region 0] 0xff090 | PC [libhardware.so] 0xf70a8cfb
+Hardware   | pid 0 | PTBR1 0x02ee74 | kstack 001 002
+Hardware   ----
+Yalnix     Leaving KernelStart (running pid 0)
+Hardware   ----
+Hardware   | Back from KernelStart
+Hardware   | HELPER setting Proc 0 kstack to 1 2
+Hardware   | Off to usermode SP [region 1] 0x1ffffc | PC [region 0] 0x2254a
+Hardware   | pid 0 | PTBR1 0x02ee74 | kstack 001 002
+Hardware   ----
+Hardware   ========= Hardware receives signal ==============
+Hardware   FrameworkSignalHandler(29), depth 1
+Hardware   ----
+Hardware   | Trap I/O possible
+Hardware   | From usermode  SP [region 1] 0x1ffffc | PC [region 0] 0x2254a
+Hardware   | pid 0 | PTBR1 0x02ee74 | kstack 001 002
+Hardware   | Calling Yalnix handler 0x23460 for trap TRAP_TTY_TRANSMIT
+Hardware   ----
+Yalnix     TTY transmit trap (tty 0)
+Hardware   ----
+Hardware   | Back from Yalnix handler 0x23460 for trap TRAP_TTY_TRANSMIT
+Hardware   Kernel heap OK.
+Hardware   Kernel heap usage: 15 blocks allocated, 21340 bytes total
+Hardware   | Off to usermode SP [region 1] 0x1ffffc | PC [region 0] 0x2254a
+Hardware   | pid 0 | PTBR1 0x02ee74 | kstack 001 002
+Hardware   ----
+Yalnix     DoIdle
+Hardware   ========= Hardware receives signal ==============
+Hardware   FrameworkSignalHandler(14), depth 1
+Hardware   clock tick 1
+Hardware   ----
+Hardware   | Trap Alarm clock
+Hardware   | From usermode  SP [region 1] 0x1ffea0 | PC [vdso] 0xf7122579
+Hardware   | pid 0 | PTBR1 0x02ee74 | kstack 001 002
+Hardware   | Calling Yalnix handler 0x230b1 for trap TRAP_CLOCK
+Hardware   ----
+Yalnix     Clock trap
+Yalnix     Scheduling next process
+Yalnix     Ready queue: Yalnix     1 Yalnix     
+Hardware       | WriteRegister(REG_PTBR1,0x02f288)
+Hardware       | WriteRegister(REG_TLB_FLUSH,TLB_FLUSH_1)
+Hardware   FlushTLB(TLB_FLUSH_1): PTBR1 0x2f288, PTLR1 0x80
+Yalnix     Switching to next process 1
+Hardware   ----
+Hardware   | On [kcs stack] invoking  MyKCS function 0x022839
+Hardware   | From kernelmode SP [region 0] 0xff090 | PC [libhardware.so] 0xf70a8cfb
+Hardware   | pid 1 | PTBR1 0x02f288 | kstack 001 002
+Hardware   ----
+Hardware       | WriteRegister(REG_TLB_FLUSH,TLB_FLUSH_0)
+Hardware   FlushTLB(TLB_FLUSH_0): PTBR0 0x2e844, PTLR0 0x80
+Hardware   ----
+Hardware   | On [kcs stack] returning from MyKCS function 0x022839
+Hardware   | Going to kernelmode SP [region 0] 0xff030 | PC [libhardware.so] 0xf70a8cfb
+Hardware   | pid 1 | PTBR1 0x02f288 | kstack 126 127
+Hardware   ----
+Hardware   ----
+Hardware   | Back from Yalnix handler 0x22f8a for trap TRAP_KERNEL (TtyWrite)
+Hardware   | Off to usermode SP [region 1] 0x1ffe10 | PC [region 1] 0x100e6a
+Hardware   | pid 1 | PTBR1 0x02f288 | kstack 126 127
+Hardware   ----
+Hardware   ========= Hardware receives signal ==============
+Hardware   FrameworkSignalHandler(11), depth 1
+Hardware       ----
+Hardware       | TLB miss p:128  -> pfn:003
+Hardware       | In SP [region 1] 0x1ffe10 | PC [region 1] 0x100e6a
+Hardware       | pid 1 | PTBR1 0x02f288 | kstack 126 127
+Hardware       ----
+Hardware   ========= Hardware receives signal ==============
+Hardware   FrameworkSignalHandler(11), depth 1
+Hardware       ----
+Hardware       | TLB miss p:129  -> pfn:004
+Hardware       | In SP [region 1] 0x1ffddc | PC [region 1] 0x103c00
+Hardware       | pid 1 | PTBR1 0x02f288 | kstack 126 127
+Hardware       ----
+Hardware   ========= Hardware receives signal ==============
+Hardware   FrameworkSignalHandler(11), depth 1
+Hardware       ----
+Hardware       | TLB miss p:131  -> pfn:006
+Hardware       | In SP [region 1] 0x1ffde0 | PC [region 1] 0x101a1f
+Hardware       | pid 1 | PTBR1 0x02f288 | kstack 126 127
+Hardware       ----
+Hardware   ========= Hardware receives signal ==============
+Hardware   FrameworkSignalHandler(11), depth 1
+Hardware       ----
+Hardware       | TLB miss p:132  -> pfn:007
+Hardware       | In SP [region 1] 0x1ffdc0 | PC [region 1] 0x101906
+Hardware       | pid 1 | PTBR1 0x02f288 | kstack 126 127
+Hardware       ----
+Hardware   ========= Hardware receives signal ==============
+Hardware   FrameworkSignalHandler(11), depth 1
+Hardware       ----
+Hardware       | TLB miss p:130  -> pfn:005
+Hardware       | In SP [region 1] 0x1ffdb0 | PC [region 1] 0x10334d
+Hardware       | pid 1 | PTBR1 0x02f288 | kstack 126 127
+Hardware       ----
+Hardware   ========= Hardware receives signal ==============
+Hardware   FrameworkSignalHandler(11), depth 1
+Hardware   ----
+Hardware   | Syscall trap TtyWrite
+Hardware   | From usermode  SP [region 1] 0x1ffe10 | PC [region 1] 0x100e6a
+Hardware   | pid 1 | PTBR1 0x02f288 | kstack 126 127
+Hardware   | Calling Yalnix handler 0x22f8a for trap TRAP_KERNEL (TtyWrite)
+Hardware   ----
+Yalnix     Kernel trap (code 0xabcdef22)
+Hardware       ----
+Hardware       | TtyTransmit(0, 0x0002f4a4, 11) ptbr1 2f288
+Hardware       ----
+Hardware   0>Reading...
+Hardware   Kernel heap OK.
+Hardware   Kernel heap usage: 16 blocks allocated, 21356 bytes total
+Yalnix     Scheduling next process
+Yalnix     Ready queue: Yalnix     
+Yalnix     ScheduleNextProcess: ready queue empty, running idle
+Hardware       | WriteRegister(REG_PTBR1,0x02ee74)
+Hardware       | WriteRegister(REG_TLB_FLUSH,TLB_FLUSH_1)
+Hardware   FlushTLB(TLB_FLUSH_1): PTBR1 0x2ee74, PTLR1 0x80
+Yalnix     Switching to next process 0
+Hardware   ----
+Hardware   | On [kcs stack] invoking  MyKCS function 0x022839
+Hardware   | From kernelmode SP [region 0] 0xff030 | PC [libhardware.so] 0xf70a8cfb
+Hardware   | pid 0 | PTBR1 0x02ee74 | kstack 126 127
+Hardware   ----
+Hardware       | WriteRegister(REG_TLB_FLUSH,TLB_FLUSH_0)
+Hardware   FlushTLB(TLB_FLUSH_0): PTBR0 0x2e844, PTLR0 0x80
+Hardware   ----
+Hardware   | On [kcs stack] returning from MyKCS function 0x022839
+Hardware   | Going to kernelmode SP [region 0] 0xff090 | PC [libhardware.so] 0xf70a8cfb
+Hardware   | pid 0 | PTBR1 0x02ee74 | kstack 001 002
+Hardware   ----
+Hardware   ----
+Hardware   | Back from Yalnix handler 0x230b1 for trap TRAP_CLOCK
+Hardware   | Off to usermode SP [region 1] 0x1ffea0 | PC [vdso] 0xf7122579
+Hardware   | pid 0 | PTBR1 0x02ee74 | kstack 001 002
+Hardware   ----
+Hardware   ========= Hardware receives signal ==============
+Hardware   FrameworkSignalHandler(29), depth 1
+Hardware   ----
+Hardware   | Trap I/O possible
+Hardware   | From usermode  SP [region 1] 0x1ffea0 | PC [vdso] 0xf7122579
+Hardware   | pid 0 | PTBR1 0x02ee74 | kstack 001 002
+Hardware   | Calling Yalnix handler 0x23460 for trap TRAP_TTY_TRANSMIT
+Hardware   ----
+Yalnix     TTY transmit trap (tty 0)
+Hardware   ----
+Hardware   | Back from Yalnix handler 0x23460 for trap TRAP_TTY_TRANSMIT
+Hardware   Kernel heap OK.
+Hardware   Kernel heap usage: 15 blocks allocated, 21340 bytes total
+Hardware   | Off to usermode SP [region 1] 0x1ffea0 | PC [vdso] 0xf7122579
+Hardware   | pid 0 | PTBR1 0x02ee74 | kstack 001 002
+Hardware   ----
+Yalnix     DoIdle
+Hardware   ========= Hardware receives signal ==============
+Hardware   FrameworkSignalHandler(14), depth 1
+Hardware   clock tick 2
+Hardware   ----
+Hardware   | Trap Alarm clock
+Hardware   | From usermode  SP [region 1] 0x1ffea0 | PC [vdso] 0xf7122579
+Hardware   | pid 0 | PTBR1 0x02ee74 | kstack 001 002
+Hardware   | Calling Yalnix handler 0x230b1 for trap TRAP_CLOCK
+Hardware   ----
+Yalnix     Clock trap
+Yalnix     Scheduling next process
+Yalnix     Ready queue: Yalnix     1 Yalnix     
+Hardware       | WriteRegister(REG_PTBR1,0x02f288)
+Hardware       | WriteRegister(REG_TLB_FLUSH,TLB_FLUSH_1)
+Hardware   FlushTLB(TLB_FLUSH_1): PTBR1 0x2f288, PTLR1 0x80
+Yalnix     Switching to next process 1
+Hardware   ----
+Hardware   | On [kcs stack] invoking  MyKCS function 0x022839
+Hardware   | From kernelmode SP [region 0] 0xff090 | PC [libhardware.so] 0xf70a8cfb
+Hardware   | pid 1 | PTBR1 0x02f288 | kstack 001 002
+Hardware   ----
+Hardware       | WriteRegister(REG_TLB_FLUSH,TLB_FLUSH_0)
+Hardware   FlushTLB(TLB_FLUSH_0): PTBR0 0x2e844, PTLR0 0x80
+Hardware   ----
+Hardware   | On [kcs stack] returning from MyKCS function 0x022839
+Hardware   | Going to kernelmode SP [region 0] 0xff030 | PC [libhardware.so] 0xf70a8cfb
+Hardware   | pid 1 | PTBR1 0x02f288 | kstack 126 127
+Hardware   ----
+Hardware   ----
+Hardware   | Back from Yalnix handler 0x22f8a for trap TRAP_KERNEL (TtyWrite)
+Hardware   | Off to usermode SP [region 1] 0x1ffe10 | PC [region 1] 0x100e6a
+Hardware   | pid 1 | PTBR1 0x02f288 | kstack 126 127
+Hardware   ----
+Hardware   ========= Hardware receives signal ==============
+Hardware   FrameworkSignalHandler(11), depth 1
+Hardware       ----
+Hardware       | TLB miss p:128  -> pfn:003
+Hardware       | In SP [region 1] 0x1ffe10 | PC [region 1] 0x100e6a
+Hardware       | pid 1 | PTBR1 0x02f288 | kstack 126 127
+Hardware       ----
+Hardware   ========= Hardware receives signal ==============
+Hardware   FrameworkSignalHandler(11), depth 1
+Hardware       ----
+Hardware       | TLB miss p:129  -> pfn:004
+Hardware       | In SP [region 1] 0x1ffddc | PC [region 1] 0x103c00
+Hardware       | pid 1 | PTBR1 0x02f288 | kstack 126 127
+Hardware       ----
+Hardware   ========= Hardware receives signal ==============
+Hardware   FrameworkSignalHandler(11), depth 1
+Hardware       ----
+Hardware       | TLB miss p:131  -> pfn:006
+Hardware       | In SP [region 1] 0x1ffde0 | PC [region 1] 0x101a1f
+Hardware       | pid 1 | PTBR1 0x02f288 | kstack 126 127
+Hardware       ----
+Hardware   ========= Hardware receives signal ==============
+Hardware   FrameworkSignalHandler(11), depth 1
+Hardware       ----
+Hardware       | TLB miss p:132  -> pfn:007
+Hardware       | In SP [region 1] 0x1ffdc0 | PC [region 1] 0x101906
+Hardware       | pid 1 | PTBR1 0x02f288 | kstack 126 127
+Hardware       ----
+Hardware   ========= Hardware receives signal ==============
+Hardware   FrameworkSignalHandler(11), depth 1
+Hardware   ----
+Hardware   | Syscall trap TtyRead
+Hardware   | From usermode  SP [region 1] 0x1ffe40 | PC [region 1] 0x100e04
+Hardware   | pid 1 | PTBR1 0x02f288 | kstack 126 127
+Hardware   | Calling Yalnix handler 0x22f8a for trap TRAP_KERNEL (TtyRead)
+Hardware   ----
+Yalnix     Kernel trap (code 0xabcdef21)
+Yalnix     Scheduling next process
+Yalnix     Ready queue: Yalnix     
+Yalnix     ScheduleNextProcess: ready queue empty, running idle
+Hardware       | WriteRegister(REG_PTBR1,0x02ee74)
+Hardware       | WriteRegister(REG_TLB_FLUSH,TLB_FLUSH_1)
+Hardware   FlushTLB(TLB_FLUSH_1): PTBR1 0x2ee74, PTLR1 0x80
+Yalnix     Switching to next process 0
+Hardware   ----
+Hardware   | On [kcs stack] invoking  MyKCS function 0x022839
+Hardware   | From kernelmode SP [region 0] 0xff030 | PC [libhardware.so] 0xf70a8cfb
+Hardware   | pid 0 | PTBR1 0x02ee74 | kstack 126 127
+Hardware   ----
+Hardware       | WriteRegister(REG_TLB_FLUSH,TLB_FLUSH_0)
+Hardware   FlushTLB(TLB_FLUSH_0): PTBR0 0x2e844, PTLR0 0x80
+Hardware   ----
+Hardware   | On [kcs stack] returning from MyKCS function 0x022839
+Hardware   | Going to kernelmode SP [region 0] 0xff090 | PC [libhardware.so] 0xf70a8cfb
+Hardware   | pid 0 | PTBR1 0x02ee74 | kstack 001 002
+Hardware   ----
+Hardware   ----
+Hardware   | Back from Yalnix handler 0x230b1 for trap TRAP_CLOCK
+Hardware   | Off to usermode SP [region 1] 0x1ffea0 | PC [vdso] 0xf7122579
+Hardware   | pid 0 | PTBR1 0x02ee74 | kstack 001 002
+Hardware   ----
+Yalnix     DoIdle
+Hardware   ========= Hardware receives signal ==============
+Hardware   FrameworkSignalHandler(14), depth 1
+Hardware   clock tick 3
+Hardware   ----
+Hardware   | Trap Alarm clock
+Hardware   | From usermode  SP [region 1] 0x1ffea0 | PC [vdso] 0xf7122579
+Hardware   | pid 0 | PTBR1 0x02ee74 | kstack 001 002
+Hardware   | Calling Yalnix handler 0x230b1 for trap TRAP_CLOCK
+Hardware   ----
+Yalnix     Clock trap
+Yalnix     Scheduling next process
+Yalnix     Ready queue: Yalnix     
+Yalnix     ScheduleNextProcess: ready queue empty, running idle
+Yalnix     ScheduleNextProcess: next process is the same as the current process. No need to switch.
+Hardware   ----
+Hardware   | Back from Yalnix handler 0x230b1 for trap TRAP_CLOCK
+Hardware   | Off to usermode SP [region 1] 0x1ffea0 | PC [vdso] 0xf7122579
+Hardware   | pid 0 | PTBR1 0x02ee74 | kstack 001 002
+Hardware   ----
+Yalnix     DoIdle
+Hardware   ========= Hardware receives signal ==============
+Hardware   FrameworkSignalHandler(14), depth 1
+Hardware   clock tick 4
+Hardware   ----
+Hardware   | Trap Alarm clock
+Hardware   | From usermode  SP [region 1] 0x1ffea0 | PC [vdso] 0xf7122579
+Hardware   | pid 0 | PTBR1 0x02ee74 | kstack 001 002
+Hardware   | Calling Yalnix handler 0x230b1 for trap TRAP_CLOCK
+Hardware   ----
+Yalnix     Clock trap
+Yalnix     Scheduling next process
+Yalnix     Ready queue: Yalnix     
+Yalnix     ScheduleNextProcess: ready queue empty, running idle
+Yalnix     ScheduleNextProcess: next process is the same as the current process. No need to switch.
+Hardware   ----
+Hardware   | Back from Yalnix handler 0x230b1 for trap TRAP_CLOCK
+Hardware   | Off to usermode SP [region 1] 0x1ffea0 | PC [vdso] 0xf7122579
+Hardware   | pid 0 | PTBR1 0x02ee74 | kstack 001 002
+Hardware   ----
+Yalnix     DoIdle
+Hardware   ========= Hardware receives signal ==============
+Hardware   FrameworkSignalHandler(14), depth 1
+Hardware   clock tick 5
+Hardware   ----
+Hardware   | Trap Alarm clock
+Hardware   | From usermode  SP [region 1] 0x1ffea0 | PC [vdso] 0xf7122579
+Hardware   | pid 0 | PTBR1 0x02ee74 | kstack 001 002
+Hardware   | Calling Yalnix handler 0x230b1 for trap TRAP_CLOCK
+Hardware   ----
+Yalnix     Clock trap
+Yalnix     Scheduling next process
+Yalnix     Ready queue: Yalnix     
+Yalnix     ScheduleNextProcess: ready queue empty, running idle
+Yalnix     ScheduleNextProcess: next process is the same as the current process. No need to switch.
+Hardware   ----
+Hardware   | Back from Yalnix handler 0x230b1 for trap TRAP_CLOCK
+Hardware   | Off to usermode SP [region 1] 0x1ffea0 | PC [vdso] 0xf7122579
+Hardware   | pid 0 | PTBR1 0x02ee74 | kstack 001 002
+Hardware   ----
+Yalnix     DoIdle
+Hardware   ========= Hardware receives signal ==============
+Hardware   FrameworkSignalHandler(14), depth 1
+Hardware   clock tick 6
+Hardware   ----
+Hardware   | Trap Alarm clock
+Hardware   | From usermode  SP [region 1] 0x1ffea0 | PC [vdso] 0xf7122579
+Hardware   | pid 0 | PTBR1 0x02ee74 | kstack 001 002
+Hardware   | Calling Yalnix handler 0x230b1 for trap TRAP_CLOCK
+Hardware   ----
+Yalnix     Clock trap
+Yalnix     Scheduling next process
+Yalnix     Ready queue: Yalnix     
+Yalnix     ScheduleNextProcess: ready queue empty, running idle
+Yalnix     ScheduleNextProcess: next process is the same as the current process. No need to switch.
+Hardware   ----
+Hardware   | Back from Yalnix handler 0x230b1 for trap TRAP_CLOCK
+Hardware   | Off to usermode SP [region 1] 0x1ffea0 | PC [vdso] 0xf7122579
+Hardware   | pid 0 | PTBR1 0x02ee74 | kstack 001 002
+Hardware   ----
+Yalnix     DoIdle
+Hardware   ========= Hardware receives signal ==============
+Hardware   FrameworkSignalHandler(14), depth 1
+Hardware   clock tick 7
+Hardware   ----
+Hardware   | Trap Alarm clock
+Hardware   | From usermode  SP [region 1] 0x1ffea0 | PC [vdso] 0xf7122579
+Hardware   | pid 0 | PTBR1 0x02ee74 | kstack 001 002
+Hardware   | Calling Yalnix handler 0x230b1 for trap TRAP_CLOCK
+Hardware   ----
+Yalnix     Clock trap
+Yalnix     Scheduling next process
+Yalnix     Ready queue: Yalnix     
+Yalnix     ScheduleNextProcess: ready queue empty, running idle
+Yalnix     ScheduleNextProcess: next process is the same as the current process. No need to switch.
+Hardware   ----
+Hardware   | Back from Yalnix handler 0x230b1 for trap TRAP_CLOCK
+Hardware   | Off to usermode SP [region 1] 0x1ffea0 | PC [vdso] 0xf7122579
+Hardware   | pid 0 | PTBR1 0x02ee74 | kstack 001 002
+Hardware   ----
+Yalnix     DoIdle
+Hardware   ========= Hardware receives signal ==============
+Hardware   FrameworkSignalHandler(14), depth 1
+Hardware   clock tick 8
+Hardware   ----
+Hardware   | Trap Alarm clock
+Hardware   | From usermode  SP [region 1] 0x1ffea0 | PC [vdso] 0xf7122579
+Hardware   | pid 0 | PTBR1 0x02ee74 | kstack 001 002
+Hardware   | Calling Yalnix handler 0x230b1 for trap TRAP_CLOCK
+Hardware   ----
+Yalnix     Clock trap
+Yalnix     Scheduling next process
+Yalnix     Ready queue: Yalnix     
+Yalnix     ScheduleNextProcess: ready queue empty, running idle
+Yalnix     ScheduleNextProcess: next process is the same as the current process. No need to switch.
+Hardware   ----
+Hardware   | Back from Yalnix handler 0x230b1 for trap TRAP_CLOCK
+Hardware   | Off to usermode SP [region 1] 0x1ffea0 | PC [vdso] 0xf7122579
+Hardware   | pid 0 | PTBR1 0x02ee74 | kstack 001 002
+Hardware   ----
+Yalnix     DoIdle
+Hardware   ========= Hardware receives signal ==============
+Hardware   FrameworkSignalHandler(14), depth 1
+Hardware   clock tick 9
+Hardware   ----
+Hardware   | Trap Alarm clock
+Hardware   | From usermode  SP [region 1] 0x1ffea0 | PC [vdso] 0xf7122579
+Hardware   | pid 0 | PTBR1 0x02ee74 | kstack 001 002
+Hardware   | Calling Yalnix handler 0x230b1 for trap TRAP_CLOCK
+Hardware   ----
+Yalnix     Clock trap
+Yalnix     Scheduling next process
+Yalnix     Ready queue: Yalnix     
+Yalnix     ScheduleNextProcess: ready queue empty, running idle
+Yalnix     ScheduleNextProcess: next process is the same as the current process. No need to switch.
+Hardware   ----
+Hardware   | Back from Yalnix handler 0x230b1 for trap TRAP_CLOCK
+Hardware   | Off to usermode SP [region 1] 0x1ffea0 | PC [vdso] 0xf7122579
+Hardware   | pid 0 | PTBR1 0x02ee74 | kstack 001 002
+Hardware   ----
+Yalnix     DoIdle
+Hardware   ========= Hardware receives signal ==============
+Hardware   FrameworkSignalHandler(14), depth 1
+Hardware   clock tick 10
+Hardware   ----
+Hardware   | Trap Alarm clock
+Hardware   | From usermode  SP [region 1] 0x1ffea0 | PC [vdso] 0xf7122579
+Hardware   | pid 0 | PTBR1 0x02ee74 | kstack 001 002
+Hardware   | Calling Yalnix handler 0x230b1 for trap TRAP_CLOCK
+Hardware   ----
+Yalnix     Clock trap
+Yalnix     Scheduling next process
+Yalnix     Ready queue: Yalnix     
+Yalnix     ScheduleNextProcess: ready queue empty, running idle
+Yalnix     ScheduleNextProcess: next process is the same as the current process. No need to switch.
+Hardware   ----
+Hardware   | Back from Yalnix handler 0x230b1 for trap TRAP_CLOCK
+Hardware   | Off to usermode SP [region 1] 0x1ffea0 | PC [vdso] 0xf7122579
+Hardware   | pid 0 | PTBR1 0x02ee74 | kstack 001 002
+Hardware   ----
+Yalnix     DoIdle
+Hardware   ========= Hardware receives signal ==============
+Hardware   FrameworkSignalHandler(14), depth 1
+Hardware   clock tick 11
+Hardware   ----
+Hardware   | Trap Alarm clock
+Hardware   | From usermode  SP [region 1] 0x1ffea0 | PC [vdso] 0xf7122579
+Hardware   | pid 0 | PTBR1 0x02ee74 | kstack 001 002
+Hardware   | Calling Yalnix handler 0x230b1 for trap TRAP_CLOCK
+Hardware   ----
+Yalnix     Clock trap
+Yalnix     Scheduling next process
+Yalnix     Ready queue: Yalnix     
+Yalnix     ScheduleNextProcess: ready queue empty, running idle
+Yalnix     ScheduleNextProcess: next process is the same as the current process. No need to switch.
+Hardware   ----
+Hardware   | Back from Yalnix handler 0x230b1 for trap TRAP_CLOCK
+Hardware   | Off to usermode SP [region 1] 0x1ffea0 | PC [vdso] 0xf7122579
+Hardware   | pid 0 | PTBR1 0x02ee74 | kstack 001 002
+Hardware   ----
+Yalnix     DoIdle
+Hardware   ========= Hardware receives signal ==============
+Hardware   FrameworkSignalHandler(14), depth 1
+Hardware   clock tick 12
+Hardware   ----
+Hardware   | Trap Alarm clock
+Hardware   | From usermode  SP [region 1] 0x1ffea0 | PC [vdso] 0xf7122579
+Hardware   | pid 0 | PTBR1 0x02ee74 | kstack 001 002
+Hardware   | Calling Yalnix handler 0x230b1 for trap TRAP_CLOCK
+Hardware   ----
+Yalnix     Clock trap
+Yalnix     Scheduling next process
+Yalnix     Ready queue: Yalnix     
+Yalnix     ScheduleNextProcess: ready queue empty, running idle
+Yalnix     ScheduleNextProcess: next process is the same as the current process. No need to switch.
+Hardware   ----
+Hardware   | Back from Yalnix handler 0x230b1 for trap TRAP_CLOCK
+Hardware   | Off to usermode SP [region 1] 0x1ffea0 | PC [vdso] 0xf7122579
+Hardware   | pid 0 | PTBR1 0x02ee74 | kstack 001 002
+Hardware   ----
+Yalnix     DoIdle
+Hardware   ========= Hardware receives signal ==============
+Hardware   FrameworkSignalHandler(14), depth 1
+Hardware   clock tick 13
+Hardware   ----
+Hardware   | Trap Alarm clock
+Hardware   | From usermode  SP [region 1] 0x1ffea0 | PC [vdso] 0xf7122579
+Hardware   | pid 0 | PTBR1 0x02ee74 | kstack 001 002
+Hardware   | Calling Yalnix handler 0x230b1 for trap TRAP_CLOCK
+Hardware   ----
+Yalnix     Clock trap
+Yalnix     Scheduling next process
+Yalnix     Ready queue: Yalnix     
+Yalnix     ScheduleNextProcess: ready queue empty, running idle
+Yalnix     ScheduleNextProcess: next process is the same as the current process. No need to switch.
+Hardware   ----
+Hardware   | Back from Yalnix handler 0x230b1 for trap TRAP_CLOCK
+Hardware   | Off to usermode SP [region 1] 0x1ffea0 | PC [vdso] 0xf7122579
+Hardware   | pid 0 | PTBR1 0x02ee74 | kstack 001 002
+Hardware   ----
+Yalnix     DoIdle
+Hardware   ========= Hardware receives signal ==============
+Hardware   FrameworkSignalHandler(14), depth 1
+Hardware   clock tick 14
+Hardware   ----
+Hardware   | Trap Alarm clock
+Hardware   | From usermode  SP [region 1] 0x1ffea0 | PC [vdso] 0xf7122579
+Hardware   | pid 0 | PTBR1 0x02ee74 | kstack 001 002
+Hardware   | Calling Yalnix handler 0x230b1 for trap TRAP_CLOCK
+Hardware   ----
+Yalnix     Clock trap
+Yalnix     Scheduling next process
+Yalnix     Ready queue: Yalnix     
+Yalnix     ScheduleNextProcess: ready queue empty, running idle
+Yalnix     ScheduleNextProcess: next process is the same as the current process. No need to switch.
+Hardware   ----
+Hardware   | Back from Yalnix handler 0x230b1 for trap TRAP_CLOCK
+Hardware   | Off to usermode SP [region 1] 0x1ffea0 | PC [vdso] 0xf7122579
+Hardware   | pid 0 | PTBR1 0x02ee74 | kstack 001 002
+Hardware   ----
+Yalnix     DoIdle
+Hardware   ========= Hardware receives signal ==============
+Hardware   FrameworkSignalHandler(14), depth 1
+Hardware   clock tick 15
+Hardware   ----
+Hardware   | Trap Alarm clock
+Hardware   | From usermode  SP [region 1] 0x1ffea0 | PC [vdso] 0xf7122579
+Hardware   | pid 0 | PTBR1 0x02ee74 | kstack 001 002
+Hardware   | Calling Yalnix handler 0x230b1 for trap TRAP_CLOCK
+Hardware   ----
+Yalnix     Clock trap
+Yalnix     Scheduling next process
+Yalnix     Ready queue: Yalnix     
+Yalnix     ScheduleNextProcess: ready queue empty, running idle
+Yalnix     ScheduleNextProcess: next process is the same as the current process. No need to switch.
+Hardware   ----
+Hardware   | Back from Yalnix handler 0x230b1 for trap TRAP_CLOCK
+Hardware   | Off to usermode SP [region 1] 0x1ffea0 | PC [vdso] 0xf7122579
+Hardware   | pid 0 | PTBR1 0x02ee74 | kstack 001 002
+Hardware   ----
+Yalnix     DoIdle
+Hardware   ========= Hardware receives signal ==============
+Hardware   FrameworkSignalHandler(14), depth 1
+Hardware   clock tick 16
+Hardware   ----
+Hardware   | Trap Alarm clock
+Hardware   | From usermode  SP [region 1] 0x1ffea0 | PC [vdso] 0xf7122579
+Hardware   | pid 0 | PTBR1 0x02ee74 | kstack 001 002
+Hardware   | Calling Yalnix handler 0x230b1 for trap TRAP_CLOCK
+Hardware   ----
+Yalnix     Clock trap
+Yalnix     Scheduling next process
+Yalnix     Ready queue: Yalnix     
+Yalnix     ScheduleNextProcess: ready queue empty, running idle
+Yalnix     ScheduleNextProcess: next process is the same as the current process. No need to switch.
+Hardware   ----
+Hardware   | Back from Yalnix handler 0x230b1 for trap TRAP_CLOCK
+Hardware   | Off to usermode SP [region 1] 0x1ffea0 | PC [vdso] 0xf7122579
+Hardware   | pid 0 | PTBR1 0x02ee74 | kstack 001 002
+Hardware   ----
+Yalnix     DoIdle
+Hardware   ========= Hardware receives signal ==============
+Hardware   FrameworkSignalHandler(14), depth 1
+Hardware   clock tick 17
+Hardware   ----
+Hardware   | Trap Alarm clock
+Hardware   | From usermode  SP [region 1] 0x1ffea0 | PC [vdso] 0xf7122579
+Hardware   | pid 0 | PTBR1 0x02ee74 | kstack 001 002
+Hardware   | Calling Yalnix handler 0x230b1 for trap TRAP_CLOCK
+Hardware   ----
+Yalnix     Clock trap
+Yalnix     Scheduling next process
+Yalnix     Ready queue: Yalnix     
+Yalnix     ScheduleNextProcess: ready queue empty, running idle
+Yalnix     ScheduleNextProcess: next process is the same as the current process. No need to switch.
+Hardware   ----
+Hardware   | Back from Yalnix handler 0x230b1 for trap TRAP_CLOCK
+Hardware   | Off to usermode SP [region 1] 0x1ffea0 | PC [vdso] 0xf7122579
+Hardware   | pid 0 | PTBR1 0x02ee74 | kstack 001 002
+Hardware   ----
+Yalnix     DoIdle
+Hardware   ========= Hardware receives signal ==============
+Hardware   FrameworkSignalHandler(14), depth 1
+Hardware   clock tick 18
+Hardware   ----
+Hardware   | Trap Alarm clock
+Hardware   | From usermode  SP [region 1] 0x1ffea0 | PC [vdso] 0xf7122579
+Hardware   | pid 0 | PTBR1 0x02ee74 | kstack 001 002
+Hardware   | Calling Yalnix handler 0x230b1 for trap TRAP_CLOCK
+Hardware   ----
+Yalnix     Clock trap
+Yalnix     Scheduling next process
+Yalnix     Ready queue: Yalnix     
+Yalnix     ScheduleNextProcess: ready queue empty, running idle
+Yalnix     ScheduleNextProcess: next process is the same as the current process. No need to switch.
+Hardware   ----
+Hardware   | Back from Yalnix handler 0x230b1 for trap TRAP_CLOCK
+Hardware   | Off to usermode SP [region 1] 0x1ffea0 | PC [vdso] 0xf7122579
+Hardware   | pid 0 | PTBR1 0x02ee74 | kstack 001 002
+Hardware   ----
+Yalnix     DoIdle
+Hardware   ========= Hardware receives signal ==============
+Hardware   FrameworkSignalHandler(14), depth 1
+Hardware   clock tick 19
+Hardware   ----
+Hardware   | Trap Alarm clock
+Hardware   | From usermode  SP [region 1] 0x1ffea0 | PC [vdso] 0xf7122579
+Hardware   | pid 0 | PTBR1 0x02ee74 | kstack 001 002
+Hardware   | Calling Yalnix handler 0x230b1 for trap TRAP_CLOCK
+Hardware   ----
+Yalnix     Clock trap
+Yalnix     Scheduling next process
+Yalnix     Ready queue: Yalnix     
+Yalnix     ScheduleNextProcess: ready queue empty, running idle
+Yalnix     ScheduleNextProcess: next process is the same as the current process. No need to switch.
+Hardware   ----
+Hardware   | Back from Yalnix handler 0x230b1 for trap TRAP_CLOCK
+Hardware   | Off to usermode SP [region 1] 0x1ffea0 | PC [vdso] 0xf7122579
+Hardware   | pid 0 | PTBR1 0x02ee74 | kstack 001 002
+Hardware   ----
+Yalnix     DoIdle
+Hardware   ========= Hardware receives signal ==============
+Hardware   FrameworkSignalHandler(14), depth 1
+Hardware   clock tick 20
+Hardware   ----
+Hardware   | Trap Alarm clock
+Hardware   | From usermode  SP [region 1] 0x1ffea0 | PC [vdso] 0xf7122579
+Hardware   | pid 0 | PTBR1 0x02ee74 | kstack 001 002
+Hardware   | Calling Yalnix handler 0x230b1 for trap TRAP_CLOCK
+Hardware   ----
+Yalnix     Clock trap
+Yalnix     Scheduling next process
+Yalnix     Ready queue: Yalnix     
+Yalnix     ScheduleNextProcess: ready queue empty, running idle
+Yalnix     ScheduleNextProcess: next process is the same as the current process. No need to switch.
+Hardware   ----
+Hardware   | Back from Yalnix handler 0x230b1 for trap TRAP_CLOCK
+Hardware   | Off to usermode SP [region 1] 0x1ffea0 | PC [vdso] 0xf7122579
+Hardware   | pid 0 | PTBR1 0x02ee74 | kstack 001 002
+Hardware   ----
+Yalnix     DoIdle
+Hardware   ========= Hardware receives signal ==============
+Hardware   FrameworkSignalHandler(14), depth 1
+Hardware   clock tick 21
+Hardware   ----
+Hardware   | Trap Alarm clock
+Hardware   | From usermode  SP [region 1] 0x1ffea0 | PC [vdso] 0xf7122579
+Hardware   | pid 0 | PTBR1 0x02ee74 | kstack 001 002
+Hardware   | Calling Yalnix handler 0x230b1 for trap TRAP_CLOCK
+Hardware   ----
+Yalnix     Clock trap
+Yalnix     Scheduling next process
+Yalnix     Ready queue: Yalnix     
+Yalnix     ScheduleNextProcess: ready queue empty, running idle
+Yalnix     ScheduleNextProcess: next process is the same as the current process. No need to switch.
+Hardware   ----
+Hardware   | Back from Yalnix handler 0x230b1 for trap TRAP_CLOCK
+Hardware   | Off to usermode SP [region 1] 0x1ffea0 | PC [vdso] 0xf7122579
+Hardware   | pid 0 | PTBR1 0x02ee74 | kstack 001 002
+Hardware   ----
+Yalnix     DoIdle
+Hardware   ========= Hardware receives signal ==============
+Hardware   FrameworkSignalHandler(14), depth 1
+Hardware   clock tick 22
+Hardware   ----
+Hardware   | Trap Alarm clock
+Hardware   | From usermode  SP [region 1] 0x1ffea0 | PC [vdso] 0xf7122579
+Hardware   | pid 0 | PTBR1 0x02ee74 | kstack 001 002
+Hardware   | Calling Yalnix handler 0x230b1 for trap TRAP_CLOCK
+Hardware   ----
+Yalnix     Clock trap
+Yalnix     Scheduling next process
+Yalnix     Ready queue: Yalnix     
+Yalnix     ScheduleNextProcess: ready queue empty, running idle
+Yalnix     ScheduleNextProcess: next process is the same as the current process. No need to switch.
+Hardware   ----
+Hardware   | Back from Yalnix handler 0x230b1 for trap TRAP_CLOCK
+Hardware   | Off to usermode SP [region 1] 0x1ffea0 | PC [vdso] 0xf7122579
+Hardware   | pid 0 | PTBR1 0x02ee74 | kstack 001 002
+Hardware   ----
+Yalnix     DoIdle
+Hardware   ========= Hardware receives signal ==============
+Hardware   FrameworkSignalHandler(14), depth 1
+Hardware   clock tick 23
+Hardware   ----
+Hardware   | Trap Alarm clock
+Hardware   | From usermode  SP [region 1] 0x1ffea0 | PC [vdso] 0xf7122579
+Hardware   | pid 0 | PTBR1 0x02ee74 | kstack 001 002
+Hardware   | Calling Yalnix handler 0x230b1 for trap TRAP_CLOCK
+Hardware   ----
+Yalnix     Clock trap
+Yalnix     Scheduling next process
+Yalnix     Ready queue: Yalnix     
+Yalnix     ScheduleNextProcess: ready queue empty, running idle
+Yalnix     ScheduleNextProcess: next process is the same as the current process. No need to switch.
+Hardware   ----
+Hardware   | Back from Yalnix handler 0x230b1 for trap TRAP_CLOCK
+Hardware   | Off to usermode SP [region 1] 0x1ffea0 | PC [vdso] 0xf7122579
+Hardware   | pid 0 | PTBR1 0x02ee74 | kstack 001 002
+Hardware   ----
+Yalnix     DoIdle
+Hardware   ========= Hardware receives signal ==============
+Hardware   FrameworkSignalHandler(14), depth 1
+Hardware   clock tick 24
+Hardware   ----
+Hardware   | Trap Alarm clock
+Hardware   | From usermode  SP [region 1] 0x1ffea0 | PC [vdso] 0xf7122579
+Hardware   | pid 0 | PTBR1 0x02ee74 | kstack 001 002
+Hardware   | Calling Yalnix handler 0x230b1 for trap TRAP_CLOCK
+Hardware   ----
+Yalnix     Clock trap
+Yalnix     Scheduling next process
+Yalnix     Ready queue: Yalnix     
+Yalnix     ScheduleNextProcess: ready queue empty, running idle
+Yalnix     ScheduleNextProcess: next process is the same as the current process. No need to switch.
+Hardware   ----
+Hardware   | Back from Yalnix handler 0x230b1 for trap TRAP_CLOCK
+Hardware   | Off to usermode SP [region 1] 0x1ffea0 | PC [vdso] 0xf7122579
+Hardware   | pid 0 | PTBR1 0x02ee74 | kstack 001 002
+Hardware   ----
+Yalnix     DoIdle
+Hardware   ========= Hardware receives signal ==============
+Hardware   FrameworkSignalHandler(14), depth 1
+Hardware   clock tick 25
+Hardware   ----
+Hardware   | Trap Alarm clock
+Hardware   | From usermode  SP [region 1] 0x1ffea0 | PC [vdso] 0xf7122579
+Hardware   | pid 0 | PTBR1 0x02ee74 | kstack 001 002
+Hardware   | Calling Yalnix handler 0x230b1 for trap TRAP_CLOCK
+Hardware   ----
+Yalnix     Clock trap
+Yalnix     Scheduling next process
+Yalnix     Ready queue: Yalnix     
+Yalnix     ScheduleNextProcess: ready queue empty, running idle
+Yalnix     ScheduleNextProcess: next process is the same as the current process. No need to switch.
+Hardware   ----
+Hardware   | Back from Yalnix handler 0x230b1 for trap TRAP_CLOCK
+Hardware   | Off to usermode SP [region 1] 0x1ffea0 | PC [vdso] 0xf7122579
+Hardware   | pid 0 | PTBR1 0x02ee74 | kstack 001 002
+Hardware   ----
+Yalnix     DoIdle
+Hardware   ========= Hardware receives signal ==============
+Hardware   FrameworkSignalHandler(14), depth 1
+Hardware   clock tick 26
+Hardware   ----
+Hardware   | Trap Alarm clock
+Hardware   | From usermode  SP [region 1] 0x1ffea0 | PC [vdso] 0xf7122579
+Hardware   | pid 0 | PTBR1 0x02ee74 | kstack 001 002
+Hardware   | Calling Yalnix handler 0x230b1 for trap TRAP_CLOCK
+Hardware   ----
+Yalnix     Clock trap
+Yalnix     Scheduling next process
+Yalnix     Ready queue: Yalnix     
+Yalnix     ScheduleNextProcess: ready queue empty, running idle
+Yalnix     ScheduleNextProcess: next process is the same as the current process. No need to switch.
+Hardware   ----
+Hardware   | Back from Yalnix handler 0x230b1 for trap TRAP_CLOCK
+Hardware   | Off to usermode SP [region 1] 0x1ffea0 | PC [vdso] 0xf7122579
+Hardware   | pid 0 | PTBR1 0x02ee74 | kstack 001 002
+Hardware   ----
+Yalnix     DoIdle
+Hardware   ========= Hardware receives signal ==============
+Hardware   FrameworkSignalHandler(14), depth 1
+Hardware   clock tick 27
+Hardware   ----
+Hardware   | Trap Alarm clock
+Hardware   | From usermode  SP [region 1] 0x1ffea0 | PC [vdso] 0xf7122579
+Hardware   | pid 0 | PTBR1 0x02ee74 | kstack 001 002
+Hardware   | Calling Yalnix handler 0x230b1 for trap TRAP_CLOCK
+Hardware   ----
+Yalnix     Clock trap
+Yalnix     Scheduling next process
+Yalnix     Ready queue: Yalnix     
+Yalnix     ScheduleNextProcess: ready queue empty, running idle
+Yalnix     ScheduleNextProcess: next process is the same as the current process. No need to switch.
+Hardware   ----
+Hardware   | Back from Yalnix handler 0x230b1 for trap TRAP_CLOCK
+Hardware   | Off to usermode SP [region 1] 0x1ffea0 | PC [vdso] 0xf7122579
+Hardware   | pid 0 | PTBR1 0x02ee74 | kstack 001 002
+Hardware   ----
+Yalnix     DoIdle
+Hardware   ========= Hardware receives signal ==============
+Hardware   FrameworkSignalHandler(14), depth 1
+Hardware   clock tick 28
+Hardware   ----
+Hardware   | Trap Alarm clock
+Hardware   | From usermode  SP [region 1] 0x1ffea0 | PC [vdso] 0xf7122579
+Hardware   | pid 0 | PTBR1 0x02ee74 | kstack 001 002
+Hardware   | Calling Yalnix handler 0x230b1 for trap TRAP_CLOCK
+Hardware   ----
+Yalnix     Clock trap
+Yalnix     Scheduling next process
+Yalnix     Ready queue: Yalnix     
+Yalnix     ScheduleNextProcess: ready queue empty, running idle
+Yalnix     ScheduleNextProcess: next process is the same as the current process. No need to switch.
+Hardware   ----
+Hardware   | Back from Yalnix handler 0x230b1 for trap TRAP_CLOCK
+Hardware   | Off to usermode SP [region 1] 0x1ffea0 | PC [vdso] 0xf7122579
+Hardware   | pid 0 | PTBR1 0x02ee74 | kstack 001 002
+Hardware   ----
+Yalnix     DoIdle
+Hardware   ========= Hardware receives signal ==============
+Hardware   FrameworkSignalHandler(14), depth 1
+Hardware   clock tick 29
+Hardware   ----
+Hardware   | Trap Alarm clock
+Hardware   | From usermode  SP [region 1] 0x1ffea0 | PC [vdso] 0xf7122579
+Hardware   | pid 0 | PTBR1 0x02ee74 | kstack 001 002
+Hardware   | Calling Yalnix handler 0x230b1 for trap TRAP_CLOCK
+Hardware   ----
+Yalnix     Clock trap
+Yalnix     Scheduling next process
+Yalnix     Ready queue: Yalnix     
+Yalnix     ScheduleNextProcess: ready queue empty, running idle
+Yalnix     ScheduleNextProcess: next process is the same as the current process. No need to switch.
+Hardware   ----
+Hardware   | Back from Yalnix handler 0x230b1 for trap TRAP_CLOCK
+Hardware   | Off to usermode SP [region 1] 0x1ffea0 | PC [vdso] 0xf7122579
+Hardware   | pid 0 | PTBR1 0x02ee74 | kstack 001 002
+Hardware   ----
+Yalnix     DoIdle
+Hardware   ========= Hardware receives signal ==============
+Hardware   FrameworkSignalHandler(14), depth 1
+Hardware   clock tick 30
+Hardware   ----
+Hardware   | Trap Alarm clock
+Hardware   | From usermode  SP [region 1] 0x1ffea0 | PC [vdso] 0xf7122579
+Hardware   | pid 0 | PTBR1 0x02ee74 | kstack 001 002
+Hardware   | Calling Yalnix handler 0x230b1 for trap TRAP_CLOCK
+Hardware   ----
+Yalnix     Clock trap
+Yalnix     Scheduling next process
+Yalnix     Ready queue: Yalnix     
+Yalnix     ScheduleNextProcess: ready queue empty, running idle
+Yalnix     ScheduleNextProcess: next process is the same as the current process. No need to switch.
+Hardware   ----
+Hardware   | Back from Yalnix handler 0x230b1 for trap TRAP_CLOCK
+Hardware   | Off to usermode SP [region 1] 0x1ffea0 | PC [vdso] 0xf7122579
+Hardware   | pid 0 | PTBR1 0x02ee74 | kstack 001 002
+Hardware   ----
+Yalnix     DoIdle
+Hardware   ========= Hardware receives signal ==============
+Hardware   FrameworkSignalHandler(14), depth 1
+Hardware   clock tick 31
+Hardware   ----
+Hardware   | Trap Alarm clock
+Hardware   | From usermode  SP [region 1] 0x1ffea0 | PC [vdso] 0xf7122579
+Hardware   | pid 0 | PTBR1 0x02ee74 | kstack 001 002
+Hardware   | Calling Yalnix handler 0x230b1 for trap TRAP_CLOCK
+Hardware   ----
+Yalnix     Clock trap
+Yalnix     Scheduling next process
+Yalnix     Ready queue: Yalnix     
+Yalnix     ScheduleNextProcess: ready queue empty, running idle
+Yalnix     ScheduleNextProcess: next process is the same as the current process. No need to switch.
+Hardware   ----
+Hardware   | Back from Yalnix handler 0x230b1 for trap TRAP_CLOCK
+Hardware   | Off to usermode SP [region 1] 0x1ffea0 | PC [vdso] 0xf7122579
+Hardware   | pid 0 | PTBR1 0x02ee74 | kstack 001 002
+Hardware   ----
+Yalnix     DoIdle
+Hardware   ========= Hardware receives signal ==============
+Hardware   FrameworkSignalHandler(14), depth 1
+Hardware   clock tick 32
+Hardware   ----
+Hardware   | Trap Alarm clock
+Hardware   | From usermode  SP [region 1] 0x1ffea0 | PC [vdso] 0xf7122579
+Hardware   | pid 0 | PTBR1 0x02ee74 | kstack 001 002
+Hardware   | Calling Yalnix handler 0x230b1 for trap TRAP_CLOCK
+Hardware   ----
+Yalnix     Clock trap
+Yalnix     Scheduling next process
+Yalnix     Ready queue: Yalnix     
+Yalnix     ScheduleNextProcess: ready queue empty, running idle
+Yalnix     ScheduleNextProcess: next process is the same as the current process. No need to switch.
+Hardware   ----
+Hardware   | Back from Yalnix handler 0x230b1 for trap TRAP_CLOCK
+Hardware   | Off to usermode SP [region 1] 0x1ffea0 | PC [vdso] 0xf7122579
+Hardware   | pid 0 | PTBR1 0x02ee74 | kstack 001 002
+Hardware   ----
+Yalnix     DoIdle
+Hardware   ========= Hardware receives signal ==============
+Hardware   FrameworkSignalHandler(14), depth 1
+Hardware   clock tick 33
+Hardware   ----
+Hardware   | Trap Alarm clock
+Hardware   | From usermode  SP [region 1] 0x1ffea0 | PC [vdso] 0xf7122579
+Hardware   | pid 0 | PTBR1 0x02ee74 | kstack 001 002
+Hardware   | Calling Yalnix handler 0x230b1 for trap TRAP_CLOCK
+Hardware   ----
+Yalnix     Clock trap
+Yalnix     Scheduling next process
+Yalnix     Ready queue: Yalnix     
+Yalnix     ScheduleNextProcess: ready queue empty, running idle
+Yalnix     ScheduleNextProcess: next process is the same as the current process. No need to switch.
+Hardware   ----
+Hardware   | Back from Yalnix handler 0x230b1 for trap TRAP_CLOCK
+Hardware   | Off to usermode SP [region 1] 0x1ffea0 | PC [vdso] 0xf7122579
+Hardware   | pid 0 | PTBR1 0x02ee74 | kstack 001 002
+Hardware   ----
+Yalnix     DoIdle
+Hardware   ========= Hardware receives signal ==============
+Hardware   FrameworkSignalHandler(14), depth 1
+Hardware   clock tick 34
+Hardware   ----
+Hardware   | Trap Alarm clock
+Hardware   | From usermode  SP [region 1] 0x1ffea0 | PC [vdso] 0xf7122579
+Hardware   | pid 0 | PTBR1 0x02ee74 | kstack 001 002
+Hardware   | Calling Yalnix handler 0x230b1 for trap TRAP_CLOCK
+Hardware   ----
+Yalnix     Clock trap
+Yalnix     Scheduling next process
+Yalnix     Ready queue: Yalnix     
+Yalnix     ScheduleNextProcess: ready queue empty, running idle
+Yalnix     ScheduleNextProcess: next process is the same as the current process. No need to switch.
+Hardware   ----
+Hardware   | Back from Yalnix handler 0x230b1 for trap TRAP_CLOCK
+Hardware   | Off to usermode SP [region 1] 0x1ffea0 | PC [vdso] 0xf7122579
+Hardware   | pid 0 | PTBR1 0x02ee74 | kstack 001 002
+Hardware   ----
+Yalnix     DoIdle

@@ -12,14 +12,14 @@
 K_SRC_DIR = .
 
 # What are the kernel c and include files? 
-K_SRCS = kernelstart.c syscalls.c trap.c queue.c
-K_INCS = #memory.h process.h Queue.h syscalls.h trap.h idle.h init.h
+K_SRCS = kernelstart.c util/trap.c util/syscall.c util/queue.c util/pipe.c util/lock.c util/cvar.c
+K_INCS = kernelstart.h util/queue.h util/trap.h util/syscall.h util/pipe.h util/lock.h util/cvar.h
 
 # Where's your user source?
 U_SRC_DIR = .
 
 # What are the user c and include files?
-U_SRCS = init.c ttywrite.c
+U_SRCS = init.c ttywrite.c fork.c bigstack.c cvar.c forkstack.c lock.c pipe_w2r.c pipe_r2w.c torture.c zero.c
 U_INCS = 
 
 

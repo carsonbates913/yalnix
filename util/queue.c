@@ -1,5 +1,5 @@
 #include "kernelstart.h"
-#include "queue.h"
+#include "util/queue.h"
 #include <stddef.h>
 
 void queue_init(process_queue_t *q) {

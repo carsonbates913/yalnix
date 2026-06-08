@@ -2,7 +2,7 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <stdint.h>
-#include <stdbool.h>
+#include <stdint.h>
 #include <unistd.h>
 #include <ykernel.h>
 #include <fcntl.h>
@@ -10,9 +10,15 @@
 #include <ykernel.h>
 #include <load_info.h>
 #include "kernelstart.h"
-#include "trap.h"
+#include "util/trap.h"
+#include "util/pipe.h"
+#include "util/lock.h"
+#include "util/cvar.h"
+#include "util/syscall.h"
 
-pcb_t *process_table[10];
+//Global variables and other things I will need to keep track of
+
+pcb_t *process_table[MAX_PROCESSES];
 
 pcb_t *current_process;
 pcb_t *idle_pcb;
@@ -20,6 +26,10 @@ pcb_t *init_pcb;
 
 pte_t *idle_page_table;
 pte_t *init_page_table;
+
+pipe_t pipe_table[MAX_PIPES];
+lock_t lock_table[MAX_LOCKS];
+cvar_t cvar_table[MAX_CVARS];
 
 tty_t terminal_table[NUM_TERMINALS];
 
@@ -38,91 +48,106 @@ unsigned int is_vm_enabled;
 
 char free_frames[MAX_PMEM_SIZE / PAGESIZE];
 
-void *current_brk;
+unsigned int num_frames;
+
+void *kernel_brk;
 
 pte_t *region0_page_table;
 pte_t *region1_page_table;
 
-static KernelContext *KCCopy(KernelContext *kc_in, void *new_pcb_p, void *not_used);
+KernelContext *KCCopy(KernelContext *kc_in, void *new_pcb_p, void *not_used);
 KernelContext *KCSwitch(KernelContext *kc_in, void *curr_pcb_p, void *next_pcb_p);
 static pcb_t *MakeIdleProcess(UserContext *user_context);
 static pcb_t *MakeInitProcess(UserContext *user_context);
 
+//helpful constants to reduce code repetition
 unsigned int num_pages_per_region = (VMEM_REGION_SIZE / PAGESIZE);
 unsigned int first_kernel_stack_page = (KERNEL_STACK_BASE - VMEM_0_BASE) / PAGESIZE;
 unsigned int kernel_stack_maxsize = KERNEL_STACK_MAXSIZE / PAGESIZE;
 
+
+
+//functions to allocate and free frames
+int allocate_frame(int pfn) {
+  free_frames[pfn] = 1;
+  return 0;
+}
+ 
+int free_frame(int pfn) {
+  free_frames[pfn] = 0;
+  return 0;
+}
+ 
 int find_frame(void) {
-  for (int i = 0; i < (MAX_PMEM_SIZE / PAGESIZE); i++) {
+  for (unsigned int i = 0; i < num_frames; i++) {
     if (free_frames[i] == 0) {
-      allocate_frame(i);
-      return i;
+      allocate_frame((int)i);
+      return (int)i;
     }
   }
   return -1;
 }
 
-int allocate_frame(int pfn) {
-  free_frames[pfn] = 1;
-  return 0;
-}
-
-int free_frame(int pfn) {
-  free_frames[pfn] = 0;
-  return 0;
-}
-
+//function to set the kernel brk
 int SetKernelBrk(void *addr) {
+
+  // check if the address is within the VMEM_0_BASE and VMEM_0_LIMIT
   if ((unsigned long)addr < (unsigned long)VMEM_0_BASE ||
       (unsigned long)addr >= (unsigned long)VMEM_0_LIMIT) {
     return ERROR;
   }
 
   if (is_vm_enabled == 0) {
-    TracePrintf(1, "VM is not enabled\n");
-    current_brk = addr;
+    kernel_brk = addr;
     return 0;
   }
 
-  TracePrintf(1, "VM is enabled\n");
-
-    //we first need to find out whether the new address is less than or greater than the current_brk. That will decide if we are allocating new frames or freeing frames. Additionally, we need to find out how many frames we are allocating or freeing.
-
-    /*unsigned int current_page =
-      UP_TO_PAGE((char *)current_brk - (char *)VMEM_0_BASE) >> PAGESHIFT;
-  unsigned int new_page =
-      UP_TO_PAGE((char *)addr - (char *)VMEM_0_BASE) >> PAGESHIFT;*/
-
-    unsigned int current_page = UP_TO_PAGE((current_brk - VMEM_0_BASE)) >> PAGESHIFT;
-    unsigned int new_page = UP_TO_PAGE((addr - VMEM_0_BASE)) >> PAGESHIFT;
+ //we first need to find out whether the new address is less than or greater than the current_brk. That will decide if we are allocating new frames or freeing frames. Additionally, we need to find out how many frames we are allocating or freeing.
+ unsigned int current_page =
+ UP_TO_PAGE((unsigned long)kernel_brk - VMEM_0_BASE) >> PAGESHIFT;
+unsigned int new_page =
+ UP_TO_PAGE((unsigned long)addr - VMEM_0_BASE) >> PAGESHIFT;
 
   if (new_page == current_page) {
-    current_brk = addr;
+    kernel_brk = addr;
     return 0;
   }
 
+  //VM is enabled, so allocate frames and change the kernel_brk to the new address
   if (new_page < current_page) {
-    for (unsigned int i = new_page; i <= current_page; i++) {
-      int pfn = region0_page_table[i].pfn;
-            region0_page_table[i].valid = 0;
-      free_frame(pfn);
+    TracePrintf(1, "Shrinking the kernel heap\n");
+    for (unsigned int i = new_page; i < current_page; i++) {
+      if (region0_page_table[i].valid == 0) {
+        continue;
+      }
+      free_frame(region0_page_table[i].pfn);
+      region0_page_table[i].valid = 0;
+      region0_page_table[i].prot = PROT_NONE;
+      region0_page_table[i].pfn = 0;
     }
-      //flush the TLB so that we don't access the old frames which are now free
-      WriteRegister(REG_TLB_FLUSH, TLB_FLUSH_0);
   } else {
-    for (unsigned int i = current_page; i <= new_page; i++) {
+    TracePrintf(1, "Growing the kernel heap\n");
+    for (unsigned int i = current_page; i < new_page; i++) {
+      if (region0_page_table[i].valid) {
+        continue;
+      }
       int pfn = find_frame();
+      if (pfn == -1) {
+        return ERROR;
+      }
       region0_page_table[i].pfn = pfn;
       region0_page_table[i].valid = 1;
-      region0_page_table[i].prot = PROT_READ | PROT_WRITE | PROT_EXEC;
+      region0_page_table[i].prot = PROT_READ | PROT_WRITE;
     }
   }
-  current_brk = addr;
+  WriteRegister(REG_TLB_FLUSH, TLB_FLUSH_0);
+  kernel_brk = addr;
   return 0;
 }
 
 
 
+//function to load a program
 int
  LoadProgram(char *name, char *args[], pcb_t *proc) 
  
@@ -439,8 +464,10 @@ int
    return SUCCESS;
  }
 
+//function to start the kernel
 void KernelStart (char** argv, unsigned int pmem_size, UserContext *initial_user_context) {
 
+  //check if the pmem size is too large or too small
   if (pmem_size > MAX_PMEM_SIZE) {
     TracePrintf(1, "PMEM size is too large\n");
     return;
@@ -451,80 +478,95 @@ void KernelStart (char** argv, unsigned int pmem_size, UserContext *initial_user
     return;
   }
 
+  //calculate the total number of frames
   unsigned int total_frames = pmem_size / PAGESIZE;
+  num_frames = total_frames;
 
+  //set the kernel brk
   TracePrintf(1, "Original kernel brk page: %d\n", (unsigned)_orig_kernel_brk_page);
-  current_brk =
+  kernel_brk =
       (void *)(VMEM_0_BASE + (unsigned)_orig_kernel_brk_page * PAGESIZE);
 
-  region0_page_table =
-      (pte_t *)malloc(num_pages_per_region * sizeof(pte_t));
 
+  //allocate the page tables
+  region0_page_table = (pte_t *)malloc(num_pages_per_region * sizeof(pte_t));
+  region1_page_table = (pte_t *)malloc(num_pages_per_region * sizeof(pte_t));
+  if (region0_page_table == NULL || region1_page_table == NULL) {
+    TracePrintf(0, "KernelStart: failed to allocate page tables\n");
+    Halt();
+  }
+ 
+  //set the kernel brk page
+  unsigned int kernel_brk_page =
+      UP_TO_PAGE((unsigned long)kernel_brk - VMEM_0_BASE) >> PAGESHIFT;
+ 
+  //set the region 0 page table
   for (unsigned int i = 0; i < num_pages_per_region; i++) {
     if (i < (unsigned)_first_kernel_text_page) {
       region0_page_table[i].valid = 0;
-      region0_page_table[i].prot = PROT_READ | PROT_WRITE;
+      region0_page_table[i].prot = PROT_NONE;
       region0_page_table[i].pfn = 0;
     } else if (i < (unsigned)_first_kernel_data_page) {
       region0_page_table[i].valid = 1;
-      region0_page_table[i].prot = PROT_READ | PROT_EXEC;
+      region0_page_table[i].prot = PROT_READ | PROT_EXEC;   /* kernel text */
       region0_page_table[i].pfn = i;
-    } else if (i < (unsigned)_orig_kernel_brk_page) {
+    } else if (i < kernel_brk_page) {
       region0_page_table[i].valid = 1;
-      region0_page_table[i].prot = PROT_READ | PROT_WRITE;
+      region0_page_table[i].prot = PROT_READ | PROT_WRITE;  /* data + heap */
       region0_page_table[i].pfn = i;
     } else if (i >= first_kernel_stack_page) {
       region0_page_table[i].valid = 1;
-      region0_page_table[i].prot = PROT_READ | PROT_WRITE;
+      region0_page_table[i].prot = PROT_READ | PROT_WRITE;  /* kernel stack */
       region0_page_table[i].pfn = i;
     } else {
-      region0_page_table[i].valid = 0;
-      region0_page_table[i].prot = 0;
+      region0_page_table[i].valid = 0;                      /* heap/stack gap */
+      region0_page_table[i].prot = PROT_NONE;
       region0_page_table[i].pfn = 0;
     }
   }
-
   TracePrintf(1, "Region 0 page table: %p\n", region0_page_table);
-
-  region1_page_table =
-      (pte_t *)malloc(num_pages_per_region * sizeof(pte_t));
+ 
+  //set the region 1 page table
   for (unsigned int i = 0; i < num_pages_per_region; i++) {
     region1_page_table[i].valid = 0;
-    region1_page_table[i].prot = 0;
+    region1_page_table[i].prot = PROT_NONE;
     region1_page_table[i].pfn = 0;
   }
 
-  for (int i = 0; i < total_frames; i++) {
-    if (i < UP_TO_PAGE((current_brk - VMEM_0_BASE)) >> PAGESHIFT) {
-      free_frames[i] = 1;
-    } else {
-      free_frames[i] = 0;
+  for (unsigned int i = 0; i < total_frames; i++) {
+    free_frames[i] = 0;
+  }
+  for (unsigned int i = 0; i < num_pages_per_region; i++) {
+    if (region0_page_table[i].valid) {
+      free_frames[region0_page_table[i].pfn] = 1;
     }
   }
 
+  //write to registers
   WriteRegister(REG_PTBR0, (unsigned int)region0_page_table);
   WriteRegister(REG_PTLR0, (unsigned int)num_pages_per_region);
   WriteRegister(REG_PTBR1, (unsigned int)region1_page_table);
   WriteRegister(REG_PTLR1, (unsigned int)num_pages_per_region);
-
+ 
+  //enable virtual memory
   WriteRegister(REG_VM_ENABLE, 1);
   is_vm_enabled = 1;
   TracePrintf(0, "Virtual memory enabled\n");
-
   WriteRegister(REG_TLB_FLUSH, TLB_FLUSH_ALL);
-
+ 
+  /* Trap vector. */
   for (int i = 0; i < TRAP_VECTOR_SIZE; i++) {
     trap_vector[i] = HandleTrapUnknown;
   }
-
-  trap_vector[TRAP_KERNEL] = HandleTrapKernel;
-  trap_vector[TRAP_CLOCK] = HandleTrapClock;
-  trap_vector[TRAP_ILLEGAL] = HandleTrapIllegal;
-  trap_vector[TRAP_MEMORY] = HandleTrapMemory;
-  trap_vector[TRAP_MATH] = HandleTrapMath;
-  trap_vector[TRAP_TTY_RECEIVE] = HandleTrapTtyReceive;
+  trap_vector[TRAP_KERNEL]       = HandleTrapKernel;
+  trap_vector[TRAP_CLOCK]        = HandleTrapClock;
+  trap_vector[TRAP_ILLEGAL]      = HandleTrapIllegal;
+  trap_vector[TRAP_MEMORY]       = HandleTrapMemory;
+  trap_vector[TRAP_MATH]         = HandleTrapMath;
+  trap_vector[TRAP_TTY_RECEIVE]  = HandleTrapTtyReceive;
   trap_vector[TRAP_TTY_TRANSMIT] = HandleTrapTtyTransmit;
-  trap_vector[TRAP_DISK] = HandleTrapDisk;
+  trap_vector[TRAP_DISK]         = HandleTrapDisk;
+  WriteRegister(REG_VECTOR_BASE, (unsigned int)trap_vector);
 
   WriteRegister(REG_VECTOR_BASE, (unsigned int)trap_vector);
   WriteRegister(REG_TLB_FLUSH, TLB_FLUSH_ALL);
@@ -533,57 +575,98 @@ void KernelStart (char** argv, unsigned int pmem_size, UserContext *initial_user
 
   idle_pcb = MakeIdleProcess(initial_user_context);
   if (idle_pcb == NULL) {
-    TracePrintf(0, "MakeIdleProcess failed\n");
-    return;
+    TracePrintf(0, "KernelStart: MakeIdleProcess failed\n");
+    Halt();
   }
-
   process_table[0] = idle_pcb;
-
   TracePrintf(1, "Idle process pid %d pcb %p\n", idle_pcb->pid, idle_pcb);
-  process_table[0] = idle_pcb;
-  current_process = idle_pcb;
-
-  TracePrintf(1, "Return context pc %p sp %p\n",
-              initial_user_context->pc, initial_user_context->sp);
-
-  WriteRegister(REG_PTBR1, (unsigned int)idle_pcb->region1_page_table);
-  WriteRegister(REG_TLB_FLUSH, TLB_FLUSH_1);
-
+ 
   init_pcb = MakeInitProcess(initial_user_context);
   if (init_pcb == NULL) {
-    TracePrintf(0, "MakeInitProcess failed\n");
+    TracePrintf(0, "KernelStart: MakeInitProcess failed\n");
+    Halt();
+  }
+  process_table[1] = init_pcb;
+  TracePrintf(1, "Init process pid %d pcb %p\n", init_pcb->pid, init_pcb);
+ 
+  current_process = init_pcb;
+  init_pcb->state = RUNNING;
+  idle_pcb->state = READY;
+ 
+  //copy the idle context to the idle process
+  KernelContextSwitch(KCCopy, idle_pcb, NULL);
+ 
+  if (current_process == init_pcb) {
+    //load the init program
+    WriteRegister(REG_PTBR1, (unsigned int)init_pcb->region1_page_table);
+    WriteRegister(REG_TLB_FLUSH, TLB_FLUSH_1);
+ 
+    char *init_program = (argv != NULL && argv[0] != NULL) ? argv[0] : "init";
+    if (LoadProgram(init_program, argv, init_pcb) != SUCCESS) {
+      TracePrintf(0, "KernelStart: LoadProgram('%s') failed\n", init_program);
+      Halt();
+    }
+  }
+ 
+  *initial_user_context = current_process->user_context;
+  TracePrintf(1, "Leaving KernelStart (running pid %d)\n", current_process->pid);
+}
+
+void PrintReadyQueue(void) {
+  TracePrintf(1, "Ready queue: ");
+  pcb_t *current = ready_queue->head;
+  while (current != NULL) {
+    TracePrintf(1, "%d ", current->pid);
+    current = current->next;
+  }
+  TracePrintf(1, "\n");
+}
+
+//function to schedule the next process
+void ScheduleNextProcess(void)
+{
+  TracePrintf(1, "Scheduling next process\n");
+
+  PrintReadyQueue();  
+
+  pcb_t *old = current_process;
+  pcb_t *next;
+
+  if (old != idle_pcb && old->state == RUNNING) {
+    old->state = READY;
+    old->next = NULL;
+    enqueue(ready_queue, old);
+    TracePrintf(1, "Current process %d is ready. Enqueued to ready queue.\n", old->pid);
+  }
+
+  if (queue_is_empty(ready_queue)) {
+    TracePrintf(1, "ScheduleNextProcess: ready queue empty, running idle\n");
+    next = idle_pcb;
+  } else {
+    next = dequeue(ready_queue);
+    if (next == NULL) {
+      next = idle_pcb;
+    }
+  }
+
+  if (next == old) {
+    TracePrintf(0, "ScheduleNextProcess: next process is the same as the current process. No need to switch.\n");
+    current_process->state = RUNNING;
     return;
   }
 
-  process_table[1] = init_pcb;
+  next->state = RUNNING;
+  current_process = next;
 
-  TracePrintf(1, "Init process pid %d pcb %p\n", init_pcb->pid, init_pcb);
-  WriteRegister(REG_PTBR1, (unsigned int)init_pcb->region1_page_table);
+  WriteRegister(REG_PTBR1, (unsigned int)next->region1_page_table);
   WriteRegister(REG_TLB_FLUSH, TLB_FLUSH_1);
 
-  TracePrintf(1, "Switching to init process\n");
+  TracePrintf(1, "Switching to next process %d\n", next->pid);
 
-  KernelContextSwitch(KCCopy, init_pcb, NULL);
-
-  if(current_process == init_pcb){
-    idle_pcb->state = RUNNING;
-    init_pcb->state = READY;
-    ready_queue->head = init_pcb;
-    ready_queue->tail = init_pcb;
-  }else {
-    char* init_program = argv[0];
-    if(LoadProgram(init_program, argv, init_pcb) != 0){
-      TracePrintf(0, "LoadProgram failed\n");
-      Halt();
-    }
-    current_process = init_pcb;
-  }
-
-  *initial_user_context = current_process->user_context;
-  
-  TracePrintf(1, "Leaving KernelStart\n");
+  KernelContextSwitch( KCSwitch, (void *)old, (void *)next);
 }
 
+//function to do the idle process
 void DoIdle(void) {
   while (1) {
     TracePrintf(1, "DoIdle\n");
@@ -591,9 +674,16 @@ void DoIdle(void) {
   }
 }
 
-static KernelContext *KCCopy(KernelContext *kc_in, void *new_pcb_p, void * not_used) {
+//function to copy the kernel context
+KernelContext *KCCopy(KernelContext *kc_in, void *new_pcb_p, void * not_used) {
+
   (void)not_used;
   pcb_t *new_pcb = (pcb_t *)new_pcb_p;
+
+  if (new_pcb == NULL) {
+    TracePrintf(0, "KCCopy: new_pcb is NULL\n");
+    return NULL;
+  }
 
   TracePrintf(1, "Copying kernel context\n");
   memcpy(&new_pcb->kernel_context, kc_in, sizeof(KernelContext));
@@ -637,6 +727,7 @@ static KernelContext *KCCopy(KernelContext *kc_in, void *new_pcb_p, void * not_u
   return kc_in;
 }
 
+//function to switch the kernel context
 KernelContext *KCSwitch(KernelContext *kc_in, void *curr_pcb_p,
                           void *next_pcb_p) {
   pcb_t *curr_pcb = (pcb_t *)curr_pcb_p;
@@ -656,62 +747,78 @@ KernelContext *KCSwitch(KernelContext *kc_in, void *curr_pcb_p,
         next_pcb->kernel_stack_frames[i];
   }
 
+  WriteRegister(REG_TLB_FLUSH, TLB_FLUSH_0);
+
   current_process = next_pcb;
   return &next_pcb->kernel_context;
 }
 
+//function to make the idle process
 static pcb_t *MakeIdleProcess(UserContext *user_context) {
-  pcb_t *pcb = (pcb_t *)malloc(sizeof(pcb_t));
-  memset(pcb, 0, sizeof(pcb_t));
 
-  if (pcb == NULL) {
-    return NULL;
-  }
-  memset(pcb, 0, sizeof(pcb_t));
-
-  pcb->state = READY;
-  pcb->parent = NULL;
-  pcb->sibling = NULL;
-  pcb->next = NULL;
-  pcb->time = 0;
-  pcb->priority = 0;
-  pcb->exit_code = 0;
-
-  memset(&pcb->kernel_context, 0, sizeof(KernelContext));
-  memcpy(&pcb->user_context, user_context, sizeof(UserContext));
-
-
-  unsigned int base = (KERNEL_STACK_BASE - VMEM_0_BASE) / PAGESIZE;
-  unsigned int max_num_pages = KERNEL_STACK_MAXSIZE / PAGESIZE;
-  for (unsigned int i = 0; i < max_num_pages; i++) {
-    pcb->kernel_stack_frames[i] = region0_page_table[base + i];
-  }
-
-  pcb->region1_page_table = region1_page_table;
-
-  pcb->pid = helper_new_pid(pcb->region1_page_table);
-  if (pcb->pid < 0) {
+   pcb_t *pcb = (pcb_t *)malloc(sizeof(pcb_t));
+   if (pcb == NULL) {
+     return NULL;
+   }
+   memset(pcb, 0, sizeof(pcb_t));
+  
+   pcb->state = READY;
+   memcpy(&pcb->user_context, user_context, sizeof(UserContext));
+  
+   //allocate the idle page table
+   idle_page_table = (pte_t *)malloc(num_pages_per_region * sizeof(pte_t));
+   if (idle_page_table == NULL) {
+     free(pcb);
+     return NULL;
+   }
+   //set the idle page table
+   for (unsigned int i = 0; i < num_pages_per_region; i++) {
+     idle_page_table[i].valid = 0;
+     idle_page_table[i].prot = PROT_NONE;
+     idle_page_table[i].pfn = 0;
+   }
+   pcb->region1_page_table = idle_page_table;
+  
+   //find the frame for the stack
+   int pfn = find_frame();
+   if (pfn == -1) {
+     free(idle_page_table);
     free(pcb);
     return NULL;
   }
 
-  TracePrintf(1, "New pid: %d\n", pcb->pid);
+   //set the stack frame
+   unsigned int top = num_pages_per_region - 1;
+   idle_page_table[top].valid = 1;
+   idle_page_table[top].prot = PROT_READ | PROT_WRITE;
+   idle_page_table[top].pfn = pfn;
+  
 
-
-  {
-    int pfn = find_frame();
-    pcb->region1_page_table[(VMEM_1_SIZE / PAGESIZE) - 1].valid = 1;
-    pcb->region1_page_table[(VMEM_1_SIZE / PAGESIZE) - 1].prot = PROT_READ | PROT_WRITE;
-    pcb->region1_page_table[(VMEM_1_SIZE / PAGESIZE) - 1].pfn = pfn;
-  }
-
-  pcb->user_context.pc = (void *)DoIdle;
-  pcb->user_context.sp = (void *)(VMEM_1_LIMIT - 4);
-  TracePrintf(1, "User context: %p\n", &pcb->user_context);
-  TracePrintf(1, "User context pc: %p\n", pcb->user_context.pc);
-  TracePrintf(1, "User context sp: %p\n", pcb->user_context.sp);
-
-  return pcb;
+   for (unsigned int i = 0; i < kernel_stack_maxsize; i++) {
+     int kpfn = find_frame();
+     if (kpfn == -1) {
+       free(idle_page_table);
+       free(pcb);
+       return NULL;
+     }
+     pcb->kernel_stack_frames[i].valid = 1;
+     pcb->kernel_stack_frames[i].prot = PROT_READ | PROT_WRITE;
+     pcb->kernel_stack_frames[i].pfn = kpfn;
+   }
+  
+   pcb->pid = helper_new_pid(pcb->region1_page_table);
+   if (pcb->pid < 0) {
+     free(idle_page_table);
+     free(pcb);
+     return NULL;
+   }
+  
+   pcb->user_context.pc = (void *)DoIdle;
+   pcb->user_context.sp = (void *)(VMEM_1_LIMIT - 4);
+  
+   TracePrintf(1, "Idle: pid %d pc %p sp %p\n",
+               pcb->pid, pcb->user_context.pc, pcb->user_context.sp);
+   return pcb;
 }
 
 static pcb_t *MakeInitProcess(UserContext *user_context) {
@@ -719,59 +826,34 @@ static pcb_t *MakeInitProcess(UserContext *user_context) {
   if (pcb == NULL) {
     return NULL;
   }
-
   memset(pcb, 0, sizeof(pcb_t));
-
+ 
   pcb->state = READY;
-  pcb->parent = NULL;
-  pcb->sibling = NULL;
-  pcb->next = NULL;
-  pcb->time = 0;
-  pcb->priority = 0;
-  pcb->exit_code = 0;
-
-  memset(&pcb->kernel_context, 0, sizeof(KernelContext));
   memcpy(&pcb->user_context, user_context, sizeof(UserContext));
-
-  init_page_table =
-      (pte_t *)malloc((VMEM_1_SIZE / PAGESIZE) * sizeof(pte_t));
+ 
+  //allocate the init page table
+  init_page_table = (pte_t *)malloc(num_pages_per_region * sizeof(pte_t));
   if (init_page_table == NULL) {
     free(pcb);
     return NULL;
   }
-  memset(init_page_table, 0, (VMEM_1_SIZE / PAGESIZE) * sizeof(pte_t));
-
+  //set the init page table
+  memset(init_page_table, 0, num_pages_per_region * sizeof(pte_t));
   pcb->region1_page_table = init_page_table;
-
+ 
+  //set the pid
   pcb->pid = helper_new_pid(init_page_table);
-
-  pcb->kernel_stack_frames[0].valid = 1;
-  pcb->kernel_stack_frames[0].prot = PROT_READ | PROT_WRITE;
-  pcb->kernel_stack_frames[0].pfn = find_frame();
-  pcb->kernel_stack_frames[1].valid = 1;
-  pcb->kernel_stack_frames[1].prot = PROT_READ | PROT_WRITE;
-  pcb->kernel_stack_frames[1].pfn = find_frame();
-
-  memcpy(&pcb->user_context, user_context, sizeof(UserContext));
-
+  if (pcb->pid < 0) {
+    free(init_page_table);
+    free(pcb);
+    return NULL;
+  }
+ 
+  //set the kernel stack frames
+  unsigned int base = (KERNEL_STACK_BASE - VMEM_0_BASE) / PAGESIZE;
+  for (unsigned int i = 0; i < kernel_stack_maxsize; i++) {
+    pcb->kernel_stack_frames[i] = region0_page_table[base + i];
+  }
+ 
   return pcb;
 }
-
-/*
-switch statement on syscall number
-if fork:
-  create child process
-  copy memory
-  schedule child
-
-if Exec:
-  load program and replace current process
-  change program counter
-
-  If Exit:
-    kill current process
-    schedule next process
-If Delay:
-  put process in queue
-  context switch
-*/
